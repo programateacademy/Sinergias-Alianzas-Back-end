@@ -6,15 +6,24 @@ dotenv.config();
 
 // Importar Cors para las peticiones HTTP
 const cors = require("cors");
+const morgan = require("morgan");
 
 // Importar archivo con la conexión de la base de datos
 const connectDB = require("./mongoDB");
 
+const registerRoute = require("./routes/registerRoute");
+
 // Inicializar el servidor de express
 const app = express();
 
+app.use(morgan("dev"));
+app.use(express.json({ limit: "30mb", extended: true }));
+app.use(express.urlencoded({ limit: "30mb", extended: true }));
+
 // Usar cors
 app.use(cors());
+
+app.use("/users", registerRoute);
 
 // Usar conexión de la base de datos
 connectDB();

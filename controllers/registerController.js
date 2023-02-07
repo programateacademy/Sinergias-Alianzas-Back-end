@@ -1,7 +1,12 @@
-//Import model
+//Import dependencies
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
+//Import model
 const registerModel = require("../models/registerModel");
+
+// Key token
+const secret = 'test'
 
 //New user
 const signUp = async (req, res) =>{
@@ -9,10 +14,10 @@ const signUp = async (req, res) =>{
     const{firstName, lastName, email, password} = req.body
 
     try{
-        const  oldUser = await userModel.finOne({email});
+        const oldUser = await registerModel.findOne({email});
 
         if(oldUser){
-            return res.status(400).json({message: 'El usuario ya  esta registrado'})
+            return res.status(400).json({message: 'El usuario ya  está registrado'})
         }
 
         const hashedPassword = await bcrypt.hash(password, 12);
@@ -32,5 +37,5 @@ const signUp = async (req, res) =>{
     }
 }
 
-//export meth
+//export method
 exports.signUp = signUp;

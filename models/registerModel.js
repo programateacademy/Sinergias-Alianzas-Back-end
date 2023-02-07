@@ -3,12 +3,11 @@ const mongoose = require("mongoose");
 
 //Schema
 const registerSchema = mongoose.Schema({
-    firstName: {type: String, required: true},
-    lastName: {type: String, required: true},
+    name: {type: String, required: true},
     email: {type: String, required: true},
     password: {type: String, required: true},
     id: {type: String},
-    rol:{
+    admin:{
         type:Boolean,
         default: false,
     },
@@ -18,6 +17,6 @@ const registerSchema = mongoose.Schema({
     }
 });
 
-const Register = mongoose.model("Form", registerSchema);
+const Register = mongoose.model("register", registerSchema);
 
 module.exports = Register;

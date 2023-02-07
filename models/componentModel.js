@@ -9,29 +9,103 @@ const Schema = mongoose.Schema;
 // Structure of the component form
 const componentSchema = new Schema (
 {
-        compTitulo: String,
-        compImgPpal: String,
-        compDefinicion: String,
-        compVideo: String,
-        compDescripcion: String,
-        compImg1: String,
-        compImg2: String,
-        compImg3: String,
-        compObjetivo1: String,
-        compObjetivo2: String,
-        compObjetivo3: String,
-        compLineaTrabajo1: String,
-        compLlineaTrabajo2: String,
-        recursosMetodologia: String,
-        recursosFormatos: String,
-        recursosDiagnosticos: String,
-        recursosHerramientas: String,
-        recursosMaterial: String,
+        compTitulo: {
+        type: String, 
+        required: true,
+        trim:true,
+    },
+        compImgPpal: {
+        type: String, 
+        required: true,
+        trim:true,
+    },
+        compDefinicion: {
+        type: String, 
+        required: true,
+        trim:true,
+    },
+        compVideo: {
+        type: String, 
+        required: true,
+        trim:true,
+    },
+        compDescripcion: {
+        type: String, 
+        required: true,
+        trim:true,
+    },
+        compImg1: {
+        type: String, 
+        required: true,
+        trim:true,
+    },
+        compImg2: {
+        type: String, 
+        required: true,
+        trim:true,
+    },
+        compImg3: {
+        type: String, 
+        required: true,
+        trim:true,
+    },
+        compObjetivo1: {
+        type: String, 
+        required: true,
+        trim:true,
+    },
+        compObjetivo2: {
+        type: String, 
+        required: true,
+        trim:true,
+    },
+        compObjetivo3: {
+        type: String, 
+        required: true,
+        trim:true,
+    },
+        compLineaTrabajo1: {
+        type: String, 
+        required: true,
+        trim:true,
+    },
+        compLlineaTrabajo2: {
+        type: String, 
+        required: true,
+        trim:true,
+    },
+        recursosMetodologia: {
+        type: String, 
+        required: true,
+        trim:true,
+    },
+        recursosFormatos: {
+        type: String, 
+        required: true,
+        trim:true,
+    },
+        recursosDiagnosticos: {
+        type: String, 
+        required: true,
+        trim:true,
+    },
+        recursosHerramientas: {
+        type: String, 
+        required: true,
+        trim:true,
+    },
+        recursosMaterial: {
+        type: String, 
+        required: true,
+        trim:true,
+    },
         visible: {
             type: Boolean,
             default: true,
         },
     });
+
+// REQUIRED: El dato es requerido TRIM: Básicamente está allí para garantizar que las cadenas que guarde a través del esquema se recorten correctamente. Si agrega { type: String, trim: true }a un campo en su esquema, intentar guardar cadenas como "  hello", o "hello ", o "  hello ", terminará guardándose como "hello"en Mongo, es decir, los espacios en blanco se eliminarán de ambos lados de la cadena.
 
 
 // The mongoose.model() function of the mongoose module is used to create a collection of a particular database of MongoDB. The name of the collection created by the model function is always in plural format mean GFG to gfss and the created collection imposed a definite structure. Syntax: mongoose.model(<Collectionname>, <CollectionSchema>) Parameters: This function accepts the following two parameters:Collection name: It is the name of the collection.Collection Schema: It is the schema of the collection.

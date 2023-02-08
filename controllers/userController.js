@@ -1,6 +1,11 @@
 // Import dependencies that allow password hashing
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+
+const keysecret = process.env.SECRET_KEY
+
+//middelware
 
 // Import model
 const userModel = require('../models/userModel')
@@ -66,6 +71,104 @@ const signIn = async (req, res) => {
   }
 }
 
-// Exportar los métodos
+//email configuration
+const transporter = nodemailer.createTransport({
+  service:"gmail",
+  auth:{
+    user:"",
+    pass:""
+  }
+})
+
+//send email link for reset password
+const sendEmail = async(req, res)=>{
+  console.log(req.body)
+
+  const {email} =req.body;
+
+  if(!email){
+    res.status(401).json({status:401, message:"Escribe tu correo"})
+  }
+  try{
+    const userFind = await userModel.findOne({email:email});
+
+    //token generate for reset password
+    const token = jwt.sign({_id:userFind._id},keysecret,{
+      expiresIn:"1h"
+    })
+    const setUserToken = await userModel.findByIdAndUpdate({_id:userFind._id},{verify_token:token},{new:true})
+
+    if(setUserToken){
+      const mailOptions ={
+        from:"",
+        to:email,
+        subject:"Enviando correo para recuperar la contraseña",
+        text:`Esta link es valido por 2 minutos http://localhost/3000/${userFind.id}/${setUserToken.verify_token}`
+      }
+
+      transporter.sendMail(mailOptions,(error, info)=>{
+        if(error){
+          console.log("error",error);
+          res.status(401).json({status:401,message:"Correo no enviado"})
+        }else{
+          console.log("Correo enviado", info.response);
+          res.status(201).json({status:201, message:"Correo enviado correctamente"})
+        }
+      })
+    }
+  }catch(err){
+    res.status(401).json({status:401,message:"Usuario invalido"})
+  }
+}
+
+//verify user for forgot password time
+const timeForgot = async (req, res) =>{
+  const {id, token} =req.params;
+
+  try{
+    const validUser = await userModel.findOne({_id:id,verify_token:token});
+
+    const verifyToken = jwt.verify(token,keysecret);
+
+    if(validUser && verifyToken._id){
+      res.status(201).json({status:201,validUser})
+    }else{
+      res.status(401).json({status:401,message:"El usuario no existe"})
+    }
+  }catch(err){
+    res.status(401).json({status:401,err})
+  }
+}
+
+//change password
+const change = async(req, res) =>{
+  const {id, token} = req.params;
+
+  const {password} = req.body;
+
+  try{
+    const validUser = await userModel.findOne({_id:id,verify_token:token});
+
+    const verifyToken = jwt.verify(token,keysecret);
+
+    if(validUser && verifyToken._id){
+      const newPassword = await bcrypt.hash(password,12);
+
+      const setNewUserPass = await userModel.findByIdAndUpdate({_is:id},{password:newPassword});
+
+      setNewUserPass.save();
+      res.status(201).json({status:201, setNewUserPass})
+    }else{
+      res.status(401).json({status:401,message:"El usuario no existe"})
+    }
+  }catch(err){
+    res.status(401).json({status:401, err})
+  }
+}
+
+// Export methods
 exports.signUp = signUp
 exports.signIn = signIn
+exports.sendEmail = sendEmail
+exports.timeForgot =timeForgot
+exports.change = change

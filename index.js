@@ -6,15 +6,34 @@ dotenv.config();
 
 // Importar Cors para las peticiones HTTP
 const cors = require("cors");
+//const morgan = require("morgan");
 
 // Importar archivo con la conexión de la base de datos
 const connectDB = require("./mongoDB");
 
+// ------------------------------Parte Andrea
+//Import component routes
+const fileComponent = require("./routes/componentRoute");
+
+// ------------------------------Fin parte Andrea
+
 // Inicializar el servidor de express
 const app = express();
 
+// ------------------------------Parte Andrea
+/*Middleware
+app.use(morgan("dev"));
+app.use(express.json({ limit: "30mb", extended: true }));
+app.use(express.urlencoded({ limit: "30mb", extended: true }));*/
+
 // Usar cors
 app.use(cors());
+
+// Endpoints component
+app.use("/component", fileComponent);
+
+
+// ------------------------------Fin parte Andrea
 
 // Usar conexión de la base de datos
 connectDB();
@@ -30,3 +49,5 @@ app.get("/", (req, res) => {
 app.listen(PORT, (req, res) => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+

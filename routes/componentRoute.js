@@ -13,6 +13,6 @@ const{ addComponent, getComponents } = require("../controllers/componentControll
 //Routes to the API
 // Se establecen las rutas a utilizar en la API usando los metodos de .get (Para OBTENER RECURSOS del servidor).post (Para CREAR un recurso del servidos) .put (para ACTUALIZAR un recurso del servidor) .delete (Para ELIMINAR un recurso del servidos)
 router.post("/new", addComponent); //Create Component
-router.get("/list", getComponents); //Create Component
+router.get("/list", getComponents); //List Component
 
 module.exports = router;

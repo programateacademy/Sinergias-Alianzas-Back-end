@@ -30,7 +30,7 @@ const getComponents = async (req, res) => {
     try {
       const components = await compModel.find({ visible: true });
 
-      res.status(200).json(movies);
+      res.status(200).json(components);
     } catch (error) {
       res.status(404).json({ messsage: "Algo salió mal" });
     }

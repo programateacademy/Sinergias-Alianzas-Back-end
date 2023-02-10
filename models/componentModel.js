@@ -1,107 +1,40 @@
 // Allos you to work with the database
 const mongoose = require ("mongoose");
 // Mongoose es una librería para Node.js que nos permite escribir consultas para una base de datos de MongooDB
-const Schema = mongoose.Schema; 
 // Un esquema en Mongoose es una estructura JSON que contiene información acerca de las propiedades de un documento. Los esquemas en Mongoose soportan estos tipos de datos: 1.String 2.Number 3.Boolean 4.Buffer (img,pdf) 5.Date 6.Array 7.Schema.Types.ObjectId 8.Schema.Types.Mixed
 
 // Structure of the collection in the database
 
 // Structure of the component form
-const componentSchema = mongoose.Schema (
+const componentSchema = mongoose.Schema(
 {
-        compTitulo: {
-        type: String, 
-        required: true,
-        trim:true,
-    },
-        compImgPpal: {
-        type: String, 
-        required: true,
-        trim:true,
-    },
-        compDefinicion: {
-        type: String, 
-        required: true,
-        trim:true,
-    },
-        compVideo: {
-        type: String, 
-        required: true,
-        trim:true,
-    },
-        compDescripcion: {
-        type: String, 
-        required: true,
-        trim:true,
-    },
+        compTitulo: String,
+        compImgPpal: String,
+        compDefinicion: String,
+        compVideo: String,
+        compDescripcion: String,
         compImagenes:{
-                compImg1: {
-                type: String, 
-                required: true,
-                trim:true,
-            },
-                compImg2: {
-                type: String, 
-                required: true,
-                trim:true,
-            },
-                compImg3: {
-                type: String, 
-                required: true,
-                trim:true,
-            }
-    },
+                compImg1: String,
+                compImg2: String,
+                compImg3: String, },
+
         compObjetivos:{
-            compObjetivo1: {
-            type: String, 
-            required: true,
-            trim:true,
+            compObjetivo1: String, 
+            compObjetivo2: String, 
+            compObjetivo3: String, 
         },
-            compObjetivo2: {
-            type: String, 
-            required: true,
-            trim:true,
-        },
-            compObjetivo3: {
-            type: String, 
-            required: true,
-            trim:true,
-        }
-    },
         compLineasTrabajo:{
-            compLineaTrabajo1: {
-            type: String, 
-            required: true,
-            trim:true,
+            compLineaTrabajo1:String,
+            compLlineaTrabajo2:String,
         },
-            compLlineaTrabajo2: {
-            type: String, 
-            required: true,
-            trim:true,
-        }
-    },
         recursos:{
-            recursosMetodologia: {
-            type: String, 
-            trim:true,
+            recursosMetodologia:String, 
+            recursosFormatos:String, 
+            recursosDiagnosticos:String, 
+            recursosHerramientas:String, 
+            recursosMaterial:String, 
         },
-            recursosFormatos: {
-            type: String, 
-            trim:true,
-        },
-            recursosDiagnosticos: {
-            type: String, 
-            trim:true,
-        },
-            recursosHerramientas: {
-            type: String, 
-            trim:true,
-        },
-            recursosMaterial: {
-            type: String, 
-            trim:true,
-        }
-    },
+        
         visible: {
             type: Boolean,
             default: true,

@@ -41,38 +41,33 @@ const updateComponent = async (req, res) => {
     const {id} = req.params
   
     const {
-      mov_title,
-      mov_year,
-      mov_time,
-      mov_lang,
-      mov_rel_country,
-      description,
-      actors,
-      genre,
-      director,
-      rating,
-      imageFile,
-      name,
+        compTitulo,
+        compImgPpal,
+        compDefinicion,
+        compVideo,
+        compDescripcion,
+        compImagenes,
+        compObjetivos,
+        compLineasTrabajo,
+        recursos,
+        visible,
     } = req.body;
-  
+
     try {
       if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(404).json({message: `La película con el id: ${id} no existe` })
+        return res.status(404).json({message: `El componente con el id: ${id} no existe` })
       }
       const updatedMovie = {
-        mov_title,
-      mov_year,
-      mov_time,
-      mov_lang,
-      mov_rel_country,
-      description,
-      actors,
-      genre,
-      director,
-      rating,
-      imageFile,
-      name,
-      _id: id
+        compTitulo,
+        compImgPpal,
+        compDefinicion,
+        compVideo,
+        compDescripcion,
+        compImagenes,
+        compObjetivos,
+        compLineasTrabajo,
+        recursos,
+        visible,
       }
   
       await movieModel.findByIdAndUpdate(id, updatedMovie, {new: true})
@@ -86,3 +81,4 @@ const updateComponent = async (req, res) => {
 
 exports.addComponent= addComponent;
 exports.getComponents = getComponents;
+exports.updateComponent = updateComponent;

@@ -37,6 +37,7 @@ const getComponents = async (req, res) => {
 }
 
 // Actualizar información de la película
+/*
 const updateComponent = async (req, res) => {
     const {id} = req.params
   
@@ -57,7 +58,7 @@ const updateComponent = async (req, res) => {
       if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({message: `El componente con el id: ${id} no existe` })
       }
-      const updatedMovie = {
+      const updateComponent = {
         compTitulo,
         compImgPpal,
         compDefinicion,
@@ -70,14 +71,36 @@ const updateComponent = async (req, res) => {
         visible,
       }
   
-      await movieModel.findByIdAndUpdate(id, updatedMovie, {new: true})
+      await componentModel.findByIdAndUpdate(id, updateComponent, {new: true})
   
-      res.json(updatedMovie)
+      res.json(updateComponent)
     } catch (error) {
       res.status(400).json({message: "Algo salió mal"})
     }
   }
+  */
 
+  const updateComponent= async (req, res) => {
+    try {
+   
+      const {
+        compTitulo,
+        compImgPpal,
+    } = req.body;
+
+
+      await compModel.findOneAndUpdate(
+        { _id: req.params.id },
+        {
+          compTitulo,
+          compImgPpal,
+        }
+      );
+      res.json({ msg: "Tu actualización fue satisfactoria" });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  };
 
 exports.addComponent= addComponent;
 exports.getComponents = getComponents;

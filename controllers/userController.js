@@ -177,6 +177,33 @@ const logoutUser = asyncHandler(async (req, res) => {
   return res.status(200).json({ message: "Has cerrado sesión" });
 });
 
+/*
+- =========================
+- Obtener usuario logueado
+- =========================
+*/
+const getUser = asyncHandler(async (req, res) => {
+  //! Test del funcionamiento de la ruta
+  // res.send("Usuario");
+
+  const user = await userModel.findById(req.user._id);
+
+  if (user) {
+    const { _id, name, email, rol, isVerify } = user;
+
+    res.status(200).json({
+      _id,
+      name,
+      email,
+      rol,
+      isVerify,
+    });
+  } else {
+    res.status(404);
+    throw new Error("Usuario no encontrado.");
+  }
+});
+
 //email configuration
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -286,6 +313,7 @@ module.exports = {
   signUp,
   signIn,
   logoutUser,
+  getUser,
   sendEmail,
   timeForgot,
   change,

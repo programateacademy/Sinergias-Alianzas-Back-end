@@ -36,65 +36,12 @@ const getComponents = async (req, res) => {
     }
 }
 
-// Actualizar información de la película
-/*
-const updateComponent = async (req, res) => {
-    const {id} = req.params
-  
-    const {
-        compTitulo,
-        compImgPpal,
-        compDefinicion,
-        compVideo,
-        compDescripcion,
-        compImagenes,
-        compObjetivos,
-        compLineasTrabajo,
-        recursos,
-        visible,
-    } = req.body;
-
-    try {
-      if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(404).json({message: `El componente con el id: ${id} no existe` })
-      }
-      const updateComponent = {
-        compTitulo,
-        compImgPpal,
-        compDefinicion,
-        compVideo,
-        compDescripcion,
-        compImagenes,
-        compObjetivos,
-        compLineasTrabajo,
-        recursos,
-        visible,
-      }
-  
-      await componentModel.findByIdAndUpdate(id, updateComponent, {new: true})
-  
-      res.json(updateComponent)
-    } catch (error) {
-      res.status(400).json({message: "Algo salió mal"})
-    }
-  }
-  */
+// ACTUALIZAR INFORMACIÓN DEL FORMULARIO
 
   const updateComponent= async (req, res) => {
     try {
-   
-      const {
-        compTitulo,
-        compImgPpal,
-    } = req.body;
-
-
       await compModel.findOneAndUpdate(
-        { _id: req.params.id },
-        {
-          compTitulo,
-          compImgPpal,
-        }
+        { _id: req.params.id }, req.body
       );
       res.json({ msg: "Tu actualización fue satisfactoria" });
     } catch (err) {
@@ -102,6 +49,21 @@ const updateComponent = async (req, res) => {
     }
   };
 
+  // DELETE INFORMACIÓN DEL FORMULARIO
+
+  const deleteComponent= async (req, res) => {
+    try {
+      await compModel.findOneAndDelete(
+        { _id: req.params.id }
+      );
+      res.json({ msg: "Haz eliminado un componente" });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  };
+
+
 exports.addComponent= addComponent;
 exports.getComponents = getComponents;
 exports.updateComponent = updateComponent;
+exports.deleteComponent = deleteComponent;

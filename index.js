@@ -12,10 +12,17 @@ const cookieParser = require("cookie-parser");
 // Import file with database connection
 const connectDB = require("./mongoDB");
 
+// Importar ruta de usuarios
 const userRoute = require("./routes/userRoute");
+
+// Importar middleware
+const errorHandler = require("./middleware/errorMiddleware");
 
 // Initialize the express server
 const app = express();
+
+// Puerto de conexión del servidor
+const PORT = process.env.PORT || 5000;
 
 // Middlewares
 app.use(express.json());
@@ -32,18 +39,19 @@ app.use(
   })
 );
 
-app.use("/users", userRoute);
+// Rutas - Módulo usuarios
+app.use("/api/users", userRoute);
 
 // Use database connection
 connectDB();
-
-// Puerto de conexión del servidor
-const PORT = process.env.PORT || 5000;
 
 // Server connection port
 app.get("/", (req, res) => {
   res.send("Hola desde el servidor");
 });
+
+// Error Handler - Middleware
+app.use(errorHandler);
 
 app.listen(PORT, (req, res) => {
   console.log(`Server is running on port ${PORT}`);

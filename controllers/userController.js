@@ -26,7 +26,7 @@ const signUp = asyncHandler(async (req, res) => {
   const { firstName, secondName, lastName, email, password } = req.body;
 
   //? ¿Los campos obligatorios están diligenciados?
-  if (!firstName || !secondName || !lastName || !email || !password) {
+  if (!firstName || !lastName || !email || !password) {
     res.status(400);
 
     throw new Error("Por favor, diligencia todos los campos obligatorios");
@@ -60,7 +60,7 @@ const signUp = asyncHandler(async (req, res) => {
   const newUser = await userModel.create({
     email,
     password,
-    name: `${firstName} ${secondName} ${lastName}`,
+    name: { firstName, secondName, lastName },
     userAgent,
   });
 
@@ -77,11 +77,11 @@ const signUp = asyncHandler(async (req, res) => {
   });
 
   if (newUser) {
-    const { _id, name, email, rol, isVerify } = newUser;
+    const { _id, email, rol, isVerify } = newUser;
 
     res.status(201).json({
       _id,
-      name,
+      name: { firstName, secondName, lastName },
       email,
       rol,
       isVerify,
@@ -204,6 +204,39 @@ const getUser = asyncHandler(async (req, res) => {
   }
 });
 
+/*
+- =========================
+- Actualizar usuario
+- =========================
+*/
+const updateUser = asyncHandler(async (req, res) => {
+  //! Test del funcionamiento de la ruta
+  // res.send("Actualizar usuario");
+
+  const user = await userModel.findById(req.user._id);
+
+  if (user) {
+    const { name, email, rol, isVerify } = user;
+
+    user.email = email;
+
+    user.name = req.body || name;
+
+    const updatedUser = await user.save();
+
+    res.status(201).json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      rol: updatedUser.rol,
+      isVerify: updatedUser.isVerify,
+    });
+  } else {
+    res.status(404);
+    throw new Error("Usuario no encontrado.");
+  }
+});
+
 //email configuration
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -314,6 +347,7 @@ module.exports = {
   signIn,
   logoutUser,
   getUser,
+  updateUser,
   sendEmail,
   timeForgot,
   change,

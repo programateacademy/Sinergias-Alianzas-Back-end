@@ -10,6 +10,7 @@ const {
   signIn,
   logoutUser,
   getUser,
+  updateUser,
   sendEmail,
   timeForgot,
   change,
@@ -23,6 +24,7 @@ router.post("/signUp", signUp);
 router.post("/signIn", signIn);
 router.get("/logout", logoutUser);
 router.get("/getUser", protect, getUser);
+router.patch("/updateUser", protect, updateUser);
 router.post("/sendEmail", sendEmail);
 router.get("/timeForgot", timeForgot);
 router.post("/change", change);

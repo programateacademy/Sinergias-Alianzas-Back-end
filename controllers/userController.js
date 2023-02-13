@@ -1,5 +1,6 @@
 // Dependencias
 const asyncHandler = require("express-async-handler");
+let parser = require("ua-parser-js"); // Agente
 
 // Import dependencies that allow password hashing
 const bcrypt = require("bcryptjs");
@@ -47,11 +48,20 @@ const signUp = asyncHandler(async (req, res) => {
     throw new Error("El usuario ya está registrado");
   }
 
+  // get UserAgent
+  /*
+   todo Obtener el user-agent permite saber desde que dispositivo se está ingresando o manipulando la información de la base de datos. Se usa como una medida de seguridad. 
+   */
+  const ua = parser(req.headers["user-agent"]);
+
+  const userAgent = [ua.ua];
+
   // If the user is not registered
   const newUser = await userModel.create({
     email,
     password,
     name: `${firstName} ${secondName} ${lastName}`,
+    userAgent,
   });
 
   // Generar token

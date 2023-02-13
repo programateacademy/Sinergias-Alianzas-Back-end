@@ -237,6 +237,27 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
+/*
+- =========================
+- Eliminar usuario
+- =========================
+*/
+const deleteUser = asyncHandler(async (req, res) => {
+  //! Test del funcionamiento de la ruta
+  // res.send("Usuario eliminado");
+
+  const user = userModel.findById(req.params.id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("El usuario no existe.");
+  }
+
+  await user.remove();
+
+  res.status(200).json({ message: "Usuario eliminado correctamente" });
+});
+
 //email configuration
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -348,6 +369,7 @@ module.exports = {
   logoutUser,
   getUser,
   updateUser,
+  deleteUser,
   sendEmail,
   timeForgot,
   change,

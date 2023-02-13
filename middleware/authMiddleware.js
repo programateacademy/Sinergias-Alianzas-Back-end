@@ -41,6 +41,36 @@ const protect = asyncHandler(async (req, res, next) => {
   }
 });
 
+const adminOnly = asyncHandler(async (req, res, next) => {
+  if (req.user && req.user.rol === "Administrador") {
+    next();
+  } else {
+    res.status(401);
+    throw new Error("Acceso denegado. Solo administrador.");
+  }
+});
+
+const authorOnly = asyncHandler(async (req, res, next) => {
+  if (req.user.rol === "Colaborador" || req.user.rol === "Administrador") {
+    next();
+  } else {
+    res.status(401);
+    throw new Error("Acceso denegado. Solo colaborador.");
+  }
+});
+
+const verifiedOnly = asyncHandler(async (req, res, next) => {
+  if (req.user && req.user.isVerify) {
+    next();
+  } else {
+    res.status(401);
+    throw new Error("Acceso denegado. Cuenta no verificada.");
+  }
+});
+
 module.exports = {
-  protect
-}
+  protect,
+  adminOnly,
+  authorOnly,
+  verifiedOnly,
+};

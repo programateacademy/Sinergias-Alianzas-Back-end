@@ -107,7 +107,7 @@ const signIn = asyncHandler(async (req, res) => {
   //? ¿Todos los campos obligatorios están diligenciados?
   if (!email || !password) {
     res.status(400);
-    throw new Error('Por favor, diligencia todos los campos obligatorios');
+    throw new Error("Por favor, diligencia todos los campos obligatorios");
   }
 
   // Check if the user is already registered
@@ -115,7 +115,7 @@ const signIn = asyncHandler(async (req, res) => {
 
   if (!oldUser) {
     res.status(404);
-    throw new Error('El usuario no existe.');
+    throw new Error("El usuario no existe.");
   }
 
   // Check if the password is correct
@@ -125,10 +125,10 @@ const signIn = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Contraseña incorrecta");
   }
-  
+
   // Trigger para user-agent desconocido
   // Token
-  const token = generateToken(oldUser._id)
+  const token = generateToken(oldUser._id);
 
   if (oldUser && isPasswordCorrect) {
     // Enviar HTTP Cookie
@@ -154,6 +154,27 @@ const signIn = asyncHandler(async (req, res) => {
     res.status(500);
     throw new Error("Algo salió mal");
   }
+});
+
+/*
+- =======================
+-   Cerrar sesión
+- =======================
+*/
+const logoutUser = asyncHandler(async (req, res) => {
+  //! Test del funcionamiento de la ruta
+  // res.send('Cerrar sesión')
+
+  // Limpiar o eliminar la cookie del navegador
+  res.cookie("token", "", {
+    path: "/",
+    httpOnly: true,
+    expires: new Date(0),
+    sameSite: "none",
+    secure: true,
+  });
+
+  return res.status(200).json({ message: "Has cerrado sesión" });
 });
 
 //email configuration
@@ -261,8 +282,11 @@ const change = async (req, res) => {
 };
 
 // Export methods
-exports.signUp = signUp;
-exports.signIn = signIn;
-exports.sendEmail = sendEmail;
-exports.timeForgot = timeForgot;
-exports.change = change;
+module.exports = {
+  signUp,
+  signIn,
+  logoutUser,
+  sendEmail,
+  timeForgot,
+  change,
+};

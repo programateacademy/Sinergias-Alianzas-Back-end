@@ -1,12 +1,13 @@
-// Import express, mongoose and variables 
+// Import express, mongoose and variables
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();
 
-// Import Cors and morgan 
+// Import Cors, body and cookie parser
 const cors = require("cors");
-const morgan = require("morgan");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
 // Import file with database connection
 const connectDB = require("./mongoDB");
@@ -16,12 +17,20 @@ const userRoute = require("./routes/userRoute");
 // Initialize the express server
 const app = express();
 
-app.use(morgan("dev"));
-app.use(express.json({ limit: "30mb", extended: true }));
-app.use(express.urlencoded({ limit: "30mb", extended: true }));
+// Middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(bodyParser.json());
 
 // Use cors
-app.use(cors());
+//! Una vez se realice el despliegue reemplazar -> https://link-despliegue.vercel.app
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://link-despliegue.vercel.app"],
+    credentials: true,
+  })
+);
 
 app.use("/users", userRoute);
 

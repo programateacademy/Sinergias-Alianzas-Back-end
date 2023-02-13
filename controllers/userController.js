@@ -26,7 +26,7 @@ const signUp = asyncHandler(async (req, res) => {
   const { firstName, secondName, lastName, email, password } = req.body;
 
   //? ¿Los campos obligatorios están diligenciados?
-  if (!firstName || !lastName || !email || !password) {
+  if (!firstName || !secondName || !lastName || !email || !password) {
     res.status(400);
 
     throw new Error("Por favor, diligencia todos los campos obligatorios");
@@ -94,35 +94,67 @@ const signUp = asyncHandler(async (req, res) => {
   }
 });
 
+/*
+- =======================
+-   Iniciar sesión
+- =======================
+*/
 // user input
-const signIn = async (req, res) => {
+const signIn = asyncHandler(async (req, res) => {
   //values that are required to validate the login to the system
   const { email, password } = req.body;
 
-  try {
-    // Check if the user is already registered
-    const oldUser = await userModel.findOne({ email });
+  //? ¿Todos los campos obligatorios están diligenciados?
+  if (!email || !password) {
+    res.status(400);
+    throw new Error('Por favor, diligencia todos los campos obligatorios');
+  }
 
-    if (!oldUser)
-      return res.status(400).json({ message: "El usuario no existe" });
+  // Check if the user is already registered
+  const oldUser = await userModel.findOne({ email });
 
-    // Check if the password is correct
-    const isPasswordCorrect = await bcrypt.compare(password, oldUser.password);
+  if (!oldUser) {
+    res.status(404);
+    throw new Error('El usuario no existe.');
+  }
 
-    if (!isPasswordCorrect)
-      return res.status(400).json({ message: "Contraseña incorrecta" });
+  // Check if the password is correct
+  const isPasswordCorrect = await bcrypt.compare(password, oldUser.password);
 
-    // Token
-    const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, {
-      expiresIn: "1h",
+  if (!isPasswordCorrect) {
+    res.status(400);
+    throw new Error("Contraseña incorrecta");
+  }
+  
+  // Trigger para user-agent desconocido
+  // Token
+  const token = generateToken(oldUser._id)
+
+  if (oldUser && isPasswordCorrect) {
+    // Enviar HTTP Cookie
+    res.cookie("token", token, {
+      path: "/",
+      httpOnly: true,
+      expires: new Date(Date.now() + 1000 * 86400), // = 1 día
+      sameSite: "none",
+      secure: true,
     });
 
-    res.status(200).json({ result: oldUser, token });
-  } catch (error) {
-    res.status(500).json({ message: "Algo salió mal" });
-    console.log(error);
+    const { _id, name, email, rol, isVerify } = oldUser;
+
+    res.status(200).json({
+      _id,
+      name,
+      email,
+      rol,
+      isVerify,
+      token,
+    });
+  } else {
+    res.status(500);
+    throw new Error("Algo salió mal");
   }
-};
+});
 
 //email configuration
 const transporter = nodemailer.createTransport({

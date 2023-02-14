@@ -551,7 +551,9 @@ const forgotPassword = asyncHandler(async (req, res) => {
       name,
       link
     );
-    res.status(200).json({ message: "Correo de recuperación de contraseña enviado" });
+    res
+      .status(200)
+      .json({ message: "Correo de recuperación de contraseña enviado" });
   } catch (error) {
     res.status(500);
     throw new Error("Correo no enviado. Por favor, intenta de nuevo.");
@@ -561,8 +563,8 @@ const forgotPassword = asyncHandler(async (req, res) => {
 const resetPassword = asyncHandler(async (req, res) => {
   //! Test del funcionamiento de la ruta
   // res.send("Restablecer contraseña");
-  const {resetToken} = req.params
-  const {password} = req.body
+  const { resetToken } = req.params;
+  const { password } = req.body;
 
   const hashedToken = hashToken(resetToken);
 
@@ -584,8 +586,52 @@ const resetPassword = asyncHandler(async (req, res) => {
 
   await user.save();
 
-  res.status(200).json({ message: "Contraseña reestablecida, por favor inicia sesión" });
-})
+  res
+    .status(200)
+    .json({ message: "Contraseña reestablecida, por favor inicia sesión" });
+});
+
+/*
+- =================================
+-  Cambiar contraseña
+- =================================
+*/
+const changePassword = asyncHandler(async (req, res) => {
+  //! Test del funcionamiento de la ruta
+  // res.send("Cambiar contraseña");
+
+  const { oldPassword, password } = req.body;
+  const user = await userModel.findById(req.user._id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("El usuario no existe");
+  }
+
+  if (!oldPassword || !password) {
+    res.status(400);
+    throw new Error(
+      "Por favor ingresa la contraseña actual y la nueva contraseña."
+    );
+  }
+
+  // Verificar si la contraseña actual es correcta
+  const passwordIsCorrect = await bcrypt.compare(oldPassword, user.password);
+
+  // Guardar la nueva contraseña
+  if (user && passwordIsCorrect) {
+    user.password = password;
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Contraseña actualizada. Por favor vuelve a iniciar sesión.",
+    });
+  } else {
+    res.status(400);
+    throw new Error("La contraseña actual no es correcta.");
+  }
+});
 
 //verify user for forgot password time
 const timeForgot = async (req, res) => {
@@ -607,33 +653,6 @@ const timeForgot = async (req, res) => {
 };
 
 //change password
-const change = async (req, res) => {
-  const { id, token } = req.params;
-
-  const { password } = req.body;
-
-  try {
-    const validUser = await userModel.findOne({ _id: id, verify_token: token });
-
-    const verifyToken = jwt.verify(token, keysecret);
-
-    if (validUser && verifyToken._id) {
-      const newPassword = await bcrypt.hash(password, 12);
-
-      const setNewUserPass = await userModel.findByIdAndUpdate(
-        { _is: id },
-        { password: newPassword }
-      );
-
-      setNewUserPass.save();
-      res.status(201).json({ status: 201, setNewUserPass });
-    } else {
-      res.status(401).json({ status: 401, message: "El usuario no existe" });
-    }
-  } catch (err) {
-    res.status(401).json({ status: 401, err });
-  }
-};
 
 // Export methods
 module.exports = {
@@ -651,6 +670,6 @@ module.exports = {
   verifyUser,
   forgotPassword,
   resetPassword,
+  changePassword,
   timeForgot,
-  change,
 };

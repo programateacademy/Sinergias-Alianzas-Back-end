@@ -20,8 +20,8 @@ const {
   verifyUser,
   forgotPassword,
   resetPassword,
+  changePassword,
   timeForgot,
-  change,
 } = require("../controllers/userController");
 
 // Importar middleware
@@ -41,15 +41,15 @@ router.delete("/:id", protect, adminOnly, deleteUser);
 router.get("/getUsers", protect, adminOnly, getUsers);
 router.post("/upgradeUser", protect, adminOnly, upgradeUser);
 
-// Rutas envío de email
+// Rutas envío de email para verificar usuario y restablecer o cambiar contraseña
 router.post("/sendAutomatedEmail", protect, sendAutomatedEmail);
 router.post("/sendVerificationEmail", protect, sendVerificationEmail);
 router.patch("/verifyUser/:verificationToken", protect, verifyUser);
 router.post("/forgotPassword", forgotPassword);
 router.patch("/resetPassword/:resetToken", protect, resetPassword);
+router.patch("/changePassword", protect, changePassword);
 
 router.get("/timeForgot", timeForgot);
-router.post("/change", change);
 
 // Export the file
 module.exports = router;

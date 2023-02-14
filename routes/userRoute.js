@@ -13,6 +13,7 @@ const {
   updateUser,
   deleteUser,
   getUsers,
+  loginStatus,
   sendEmail,
   timeForgot,
   change,
@@ -26,6 +27,7 @@ router.post("/signUp", signUp);
 router.post("/signIn", signIn);
 router.get("/logout", logoutUser);
 router.get("/getUser", protect, getUser);
+router.get("/loginStatus", loginStatus);
 
 // Funciones del administrador
 router.patch("/updateUser", protect, adminOnly, updateUser);

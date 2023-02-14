@@ -1,6 +1,7 @@
 // Dependencias
 const asyncHandler = require("express-async-handler");
 let parser = require("ua-parser-js"); // Agente
+const jwt = require('jsonwebtoken')
 
 // Import dependencies that allow password hashing
 const bcrypt = require("bcryptjs");
@@ -277,6 +278,31 @@ const getUsers = asyncHandler(async (req, res) => {
   res.status(200).json(users);
 });
 
+/*
+- ===========================
+- Verificar inicio de sesión
+- ===========================
+*/
+const loginStatus = asyncHandler(async (req, res) => {
+  //! Test del funcionamiento de la ruta
+  // res.send("Sesión iniciada");
+
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.json(false);
+  }
+
+  // Verificar el token
+  const verified = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (verified) {
+    return res.json(true);
+  }
+
+  return res.json(false);
+});
+
 //email configuration
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -390,6 +416,7 @@ module.exports = {
   updateUser,
   deleteUser,
   getUsers,
+  loginStatus,
   sendEmail,
   timeForgot,
   change,

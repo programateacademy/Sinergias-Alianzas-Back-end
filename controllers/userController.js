@@ -1,7 +1,7 @@
 // Dependencias
 const asyncHandler = require("express-async-handler");
 let parser = require("ua-parser-js"); // Agente
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 
 // Import dependencies that allow password hashing
 const bcrypt = require("bcryptjs");
@@ -217,7 +217,7 @@ const updateUser = asyncHandler(async (req, res) => {
   const user = await userModel.findById(req.user._id);
 
   if (user) {
-    const { name, email, rol, isVerify } = user;
+    const { name, email } = user;
 
     user.email = email;
 
@@ -301,6 +301,33 @@ const loginStatus = asyncHandler(async (req, res) => {
   }
 
   return res.json(false);
+});
+
+/*
+- ===========================
+- Cambiar el rol del usuario
+- ===========================
+*/
+const upgradeUser = asyncHandler(async (req, res) => {
+  //! Test del funcionamiento de la ruta
+  // res.send("Cambio de rol");
+
+  const { rol, id } = req.body;
+
+  const user = await userModel.findById(id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("Usuario no encontrado");
+  }
+
+  user.rol = rol;
+
+  await user.save();
+
+  res
+    .status(200)
+    .json({ message: `El rol del usuario ha sido actualizado a: ${rol}` });
 });
 
 //email configuration
@@ -417,6 +444,7 @@ module.exports = {
   deleteUser,
   getUsers,
   loginStatus,
+  upgradeUser,
   sendEmail,
   timeForgot,
   change,

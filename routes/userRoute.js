@@ -14,6 +14,7 @@ const {
   deleteUser,
   getUsers,
   loginStatus,
+  upgradeUser,
   sendEmail,
   timeForgot,
   change,
@@ -23,19 +24,18 @@ const {
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 
 // routes with their respective methods for HTTP requests
+// Rutas Generales
 router.post("/signUp", signUp);
 router.post("/signIn", signIn);
 router.get("/logout", logoutUser);
 router.get("/getUser", protect, getUser);
 router.get("/loginStatus", loginStatus);
 
-// Funciones del administrador
+// Rutas del administrador
 router.patch("/updateUser", protect, adminOnly, updateUser);
 router.delete("/:id", protect, adminOnly, deleteUser);
 router.get("/getUsers", protect, adminOnly, getUsers);
-
-
-
+router.post("/upgradeUser", protect, adminOnly, upgradeUser);
 
 router.post("/sendEmail", sendEmail);
 router.get("/timeForgot", timeForgot);

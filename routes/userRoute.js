@@ -18,6 +18,8 @@ const {
   sendAutomatedEmail,
   sendVerificationEmail,
   verifyUser,
+  forgotPassword,
+  resetPassword,
   timeForgot,
   change,
 } = require("../controllers/userController");
@@ -43,6 +45,8 @@ router.post("/upgradeUser", protect, adminOnly, upgradeUser);
 router.post("/sendAutomatedEmail", protect, sendAutomatedEmail);
 router.post("/sendVerificationEmail", protect, sendVerificationEmail);
 router.patch("/verifyUser/:verificationToken", protect, verifyUser);
+router.post("/forgotPassword", forgotPassword);
+router.patch("/resetPassword/:resetToken", protect, resetPassword);
 
 router.get("/timeForgot", timeForgot);
 router.post("/change", change);

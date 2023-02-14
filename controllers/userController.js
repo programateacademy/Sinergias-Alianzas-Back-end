@@ -7,8 +7,6 @@ const crypto = require("crypto");
 // Import dependencies that allow password hashing
 const bcrypt = require("bcryptjs");
 
-const nodemailer = require("nodemailer");
-
 const keysecret = process.env.SECRET_KEY;
 
 // Import model
@@ -18,7 +16,6 @@ const tokenModel = require("../models/tokenModel");
 // Importar función para generar el token
 const { generateToken, hashToken } = require("../utils");
 const sendEmail = require("../utils/sendEmail");
-const { use } = require("../routes/userRoute");
 
 /*
 - =======================
@@ -266,11 +263,11 @@ const verifyUser = asyncHandler(async (req, res) => {
   }
 
   // Verificar el usuario
-  user.isVerify = true
+  user.isVerify = true;
 
-  await user.save()
+  await user.save();
 
-  res.status(200).json({message: 'Cuenta verificada correctamente'}) 
+  res.status(200).json({ message: "Cuenta verificada correctamente" });
 });
 
 /*
@@ -491,6 +488,105 @@ const sendAutomatedEmail = asyncHandler(async (req, res) => {
   }
 });
 
+/*
+- =================================
+-  Recuperar y restablecer contraseña
+- =================================
+*/
+const forgotPassword = asyncHandler(async (req, res) => {
+  //! Test del funcionamiento de la ruta
+  // res.send("Recuperar contraseña");
+
+  const { email } = req.body;
+
+  const user = await userModel.findOne({ email });
+
+  if (!user) {
+    res.status(404);
+    throw new Error("Usuario no encontrado con ese correo.");
+  }
+
+  // Eliminar token si existe en la bd
+  let token = await tokenModel.findOne({ userId: user._id });
+
+  if (token) {
+    await token.deleteOne();
+  }
+
+  // Crear token para recuperar contraseña y guardarlo
+  const resetToken = crypto.randomBytes(32).toString("hex") + user._id;
+
+  console.log(resetToken);
+  // res.send('token')
+
+  // Hash token y guardarlo
+  const hashedToken = hashToken(resetToken);
+
+  await new tokenModel({
+    userId: user._id,
+    rToken: hashedToken,
+    createdAt: Date.now(),
+    expiresAt: Date.now() + 30 * (60 * 1000), // 1 hora
+  }).save();
+
+  // Constructor para url para recuperar la contraseña
+  const resetUrl = `${process.env.FRONTEND_URL}/resetPassword/${resetToken}`;
+
+  // Enviar correo de verificación
+  const subject = "Recupera tu contraseña - Fundación Sinergias";
+  const send_to = user.email;
+  const send_from = process.env.EMAIL_USER;
+  const reply_to = "noreply@fundacionsinergias.com";
+  const template = "forgotPassword";
+  const name = `${user.name.firstName} ${user.name.lastName}`;
+  const link = resetUrl;
+
+  try {
+    await sendEmail(
+      subject,
+      send_to,
+      send_from,
+      reply_to,
+      template,
+      name,
+      link
+    );
+    res.status(200).json({ message: "Correo de recuperación de contraseña enviado" });
+  } catch (error) {
+    res.status(500);
+    throw new Error("Correo no enviado. Por favor, intenta de nuevo.");
+  }
+});
+
+const resetPassword = asyncHandler(async (req, res) => {
+  //! Test del funcionamiento de la ruta
+  // res.send("Restablecer contraseña");
+  const {resetToken} = req.params
+  const {password} = req.body
+
+  const hashedToken = hashToken(resetToken);
+
+  const userToken = await tokenModel.findOne({
+    rToken: hashedToken,
+    expiresAt: { $gt: Date.now() },
+  });
+
+  if (!userToken) {
+    res.status(404);
+    throw new Error("El token no es válido o ya expiró");
+  }
+
+  // encotnrar el usuario
+  const user = await userModel.findOne({ _id: userToken.userId });
+
+  // Restablecer contraseña
+  user.password = password;
+
+  await user.save();
+
+  res.status(200).json({ message: "Contraseña reestablecida, por favor inicia sesión" });
+})
+
 //verify user for forgot password time
 const timeForgot = async (req, res) => {
   const { id, token } = req.params;
@@ -553,6 +649,8 @@ module.exports = {
   sendAutomatedEmail,
   sendVerificationEmail,
   verifyUser,
+  forgotPassword,
+  resetPassword,
   timeForgot,
   change,
 };

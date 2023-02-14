@@ -17,8 +17,8 @@ const generateToken = (id) => {
 - =======================
 */
 const hashToken = (token) => {
-  return crypto.createHash("sha256").update(token.toString()).digest("hex")
-}
+  return crypto.createHash("sha256").update(token.toString()).digest("hex");
+};
 
 module.exports = {
   generateToken,

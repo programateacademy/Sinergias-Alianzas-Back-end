@@ -18,6 +18,7 @@ const tokenModel = require("../models/tokenModel");
 // Importar función para generar el token
 const { generateToken, hashToken } = require("../utils");
 const sendEmail = require("../utils/sendEmail");
+const Token = require("../models/tokenModel");
 
 /*
 - =======================
@@ -196,6 +197,70 @@ const signIn = asyncHandler(async (req, res) => {
   } else {
     res.status(500);
     throw new Error("Algo salió mal");
+  }
+});
+
+/*
+- =======================
+- Enviar código de acceso
+- =======================
+*/
+const sendLoginCode = asyncHandler(async (req, res) => {
+  //! Test del funcionamiento de la ruta
+  // res.send("Código de acceso");
+
+  const { email } = req.params;
+
+  const user = await userModel.findOne({ email });
+
+  if (!user) {
+    res.status(404);
+    throw new Error("Usuario no encontrado");
+  }
+
+  // Buscar el código de acceso en la base de datos
+  let userToken = await Token.findOne({
+    userId: user._id,
+    expiresAt: { $gt: Date.now() },
+  });
+
+  if (!userToken) {
+    res.status(404);
+    throw new Error(
+      "El código no es válido o ya expiró, por favor ingresa de nuevo"
+    );
+  }
+
+  const loginCode = userToken.lToken;
+
+  // Desencriptar el código de acceso
+  const decryptedLoginCode = cryptr.decrypt(loginCode);
+
+  // Enviar correo con el código de acceso
+  const subject = "Código de Acceso - Fundación Sinergias";
+  const send_to = email;
+  const send_from = process.env.EMAIL_USER;
+  const reply_to = "noreply@fundacionsinergias.com";
+  const template = "loginCode";
+  const name = `${user.name.firstName} ${user.name.lastName}`;
+  const link = decryptedLoginCode;
+
+  try {
+    await sendEmail(
+      subject,
+      send_to,
+      send_from,
+      reply_to,
+      template,
+      name,
+      link
+    );
+    res
+      .status(200)
+      .json({ message: `Correo con código de acceso enviado a ${email}` });
+  } catch (error) {
+    res.status(500);
+    throw new Error("Correo no enviado. Por favor, intenta de nuevo.");
   }
 });
 
@@ -691,4 +756,5 @@ module.exports = {
   forgotPassword,
   resetPassword,
   changePassword,
+  sendLoginCode,
 };

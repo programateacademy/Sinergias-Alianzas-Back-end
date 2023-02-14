@@ -15,6 +15,7 @@ const userModel = require("../models/userModel");
 
 // Importar función para generar el token
 const { generateToken } = require("../utils");
+const sendEmail = require("../utils/sendEmail");
 
 /*
 - =======================
@@ -330,61 +331,50 @@ const upgradeUser = asyncHandler(async (req, res) => {
     .json({ message: `El rol del usuario ha sido actualizado a: ${rol}` });
 });
 
-//email configuration
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "",
-    pass: "",
-  },
-});
+/*
+- ===========================
+-       Enviar correo
+- ===========================
+*/
+const sendAutomatedEmail = asyncHandler(async (req, res) => {
+  //! Test del funcionamiento de la ruta
+  // res.send("Enviar correo");
 
-//send email link for reset password
-const sendEmail = async (req, res) => {
-  console.log(req.body);
+  const { subject, send_to, reply_to, template, url } = req.body;
 
-  const { email } = req.body;
-
-  if (!email) {
-    res.status(401).json({ status: 401, message: "Escribe tu correo" });
+  if (!subject || !send_to || !reply_to || !template) {
+    res.status(500);
+    throw new Error("Error en el parámetro del correo");
   }
+
+  // Obtener el usuario
+  const user = await userModel.findOne({ email: send_to });
+
+  if (!user) {
+    res.status(404);
+    throw new Error("Usuario no encontrado");
+  }
+
+  const send_from = process.env.EMAIL_USER;
+  const name = `${user.name.firstName} ${user.name.lastName}`;
+  const link = `${process.env.FRONTEND_URL}${url}`;
+
   try {
-    const userFind = await userModel.findOne({ email: email });
-
-    //token generate for reset password
-    const token = jwt.sign({ _id: userFind._id }, keysecret, {
-      expiresIn: "1h",
-    });
-    const setUserToken = await userModel.findByIdAndUpdate(
-      { _id: userFind._id },
-      { verify_token: token },
-      { new: true }
+    await sendEmail(
+      subject,
+      send_to,
+      send_from,
+      reply_to,
+      template,
+      name,
+      link
     );
-
-    if (setUserToken) {
-      const mailOptions = {
-        from: "",
-        to: email,
-        subject: "Enviando correo para recuperar la contraseña",
-        text: `Esta link es valido por 2 minutos http://localhost/3000/${userFind.id}/${setUserToken.verify_token}`,
-      };
-
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.log("error", error);
-          res.status(401).json({ status: 401, message: "Correo no enviado" });
-        } else {
-          console.log("Correo enviado", info.response);
-          res
-            .status(201)
-            .json({ status: 201, message: "Correo enviado correctamente" });
-        }
-      });
-    }
-  } catch (err) {
-    res.status(401).json({ status: 401, message: "Usuario invalido" });
+    res.status(200).json({ message: "Correo enviado correctamente" });
+  } catch (error) {
+    res.status(500);
+    throw new Error("Correo no enviado. Por favor, intenta de nuevo.");
   }
-};
+});
 
 //verify user for forgot password time
 const timeForgot = async (req, res) => {
@@ -445,7 +435,7 @@ module.exports = {
   getUsers,
   loginStatus,
   upgradeUser,
-  sendEmail,
+  sendAutomatedEmail,
   timeForgot,
   change,
 };

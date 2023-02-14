@@ -258,6 +258,25 @@ const deleteUser = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Usuario eliminado correctamente" });
 });
 
+/*
+- =========================
+- Listar todos los usuarios
+- =========================
+*/
+const getUsers = asyncHandler(async (req, res) => {
+  //! Test del funcionamiento de la ruta
+  // res.send("Todos los usuarios");
+
+  const users = await userModel.find().sort("-createdAt").select("-password");
+
+  if (!users) {
+    res.status(500);
+    throw new Error("Algo salió mal");
+  }
+
+  res.status(200).json(users);
+});
+
 //email configuration
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -370,6 +389,7 @@ module.exports = {
   getUser,
   updateUser,
   deleteUser,
+  getUsers,
   sendEmail,
   timeForgot,
   change,

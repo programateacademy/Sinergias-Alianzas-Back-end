@@ -2,6 +2,7 @@
 const asyncHandler = require("express-async-handler");
 let parser = require("ua-parser-js"); // Agente
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 // Import dependencies that allow password hashing
 const bcrypt = require("bcryptjs");
@@ -12,10 +13,12 @@ const keysecret = process.env.SECRET_KEY;
 
 // Import model
 const userModel = require("../models/userModel");
+const tokenModel = require("../models/tokenModel");
 
 // Importar función para generar el token
-const { generateToken } = require("../utils");
+const { generateToken, hashToken } = require("../utils");
 const sendEmail = require("../utils/sendEmail");
+const { use } = require("../routes/userRoute");
 
 /*
 - =======================
@@ -156,6 +159,118 @@ const signIn = asyncHandler(async (req, res) => {
     res.status(500);
     throw new Error("Algo salió mal");
   }
+});
+
+/*
+- ==============================
+- Enviar correo de verificación
+- ==============================
+*/
+const sendVerificationEmail = asyncHandler(async (req, res) => {
+  //! Test del funcionamiento de la ruta
+  // res.send("Correo de verificación");
+
+  const user = await userModel.findById(req.user._id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("Usuario no encontrado.");
+  }
+
+  if (user.isVerify) {
+    res.status(400);
+    throw new Error("Usuario ya verificado.");
+  }
+
+  // Eliminar token si existe en la bd
+  let token = await tokenModel.findOne({ userId: user._id });
+
+  if (token) {
+    await token.deleteOne();
+  }
+
+  // Crear token de verificación y guardarlo
+  const verificationToken = crypto.randomBytes(32).toString("hex") + user._id;
+
+  console.log(verificationToken);
+  // res.send('token')
+
+  // Hash token y guardarlo
+  const hashedToken = hashToken(verificationToken);
+
+  await new tokenModel({
+    userId: user._id,
+    vToken: hashedToken,
+    createdAt: Date.now(),
+    expiresAt: Date.now() + 30 * (60 * 1000), // 1 hora
+  }).save();
+
+  // Constructor para url de verifiación
+  const verificationUrl = `${process.env.FRONTEND_URL}/verify/${verificationToken}`;
+
+  // Enviar correo de verificación
+  const subject = "Verifica tu cuenta - Fundación Sinergias";
+  const send_to = user.email;
+  const send_from = process.env.EMAIL_USER;
+  const reply_to = "noreply@fundacionsinergias.com";
+  const template = "verifyEmail";
+  const name = `${user.name.firstName} ${user.name.lastName}`;
+  const link = verificationUrl;
+
+  try {
+    await sendEmail(
+      subject,
+      send_to,
+      send_from,
+      reply_to,
+      template,
+      name,
+      link
+    );
+    res.status(200).json({ message: "Correo de verificación enviado" });
+  } catch (error) {
+    res.status(500);
+    throw new Error("Correo no enviado. Por favor, intenta de nuevo.");
+  }
+});
+
+/*
+- ==============================
+-       Verificar usuario
+- ==============================
+*/
+const verifyUser = asyncHandler(async (req, res) => {
+  //! Test del funcionamiento de la ruta
+  // res.send("Verificar usuario");
+
+  const { verificationToken } = req.params;
+
+  const hashedToken = hashToken(verificationToken);
+
+  const userToken = await tokenModel.findOne({
+    vToken: hashedToken,
+    expiresAt: { $gt: Date.now() },
+  });
+
+  if (!userToken) {
+    res.status(404);
+    throw new Error("El token no es válido o ya expiró");
+  }
+
+  // encotnrar el usuario
+  const user = await userModel.findOne({ _id: userToken.userId });
+
+  if (user.isVerify) {
+    res.status(400);
+    throw new Error("El usuario ya fue verificado.");
+  }
+
+  // Verificar el usuario
+  user.isVerify = true
+
+  await user.save()
+
+  res.status(200).json({message: 'Cuenta verificada correctamente'}) 
 });
 
 /*
@@ -333,7 +448,7 @@ const upgradeUser = asyncHandler(async (req, res) => {
 
 /*
 - ===========================
--       Enviar correo
+-  Enviar correo automático
 - ===========================
 */
 const sendAutomatedEmail = asyncHandler(async (req, res) => {
@@ -436,6 +551,8 @@ module.exports = {
   loginStatus,
   upgradeUser,
   sendAutomatedEmail,
+  sendVerificationEmail,
+  verifyUser,
   timeForgot,
   change,
 };

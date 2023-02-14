@@ -21,7 +21,6 @@ const {
   forgotPassword,
   resetPassword,
   changePassword,
-  timeForgot,
 } = require("../controllers/userController");
 
 // Importar middleware
@@ -48,8 +47,6 @@ router.patch("/verifyUser/:verificationToken", protect, verifyUser);
 router.post("/forgotPassword", forgotPassword);
 router.patch("/resetPassword/:resetToken", protect, resetPassword);
 router.patch("/changePassword", protect, changePassword);
-
-router.get("/timeForgot", timeForgot);
 
 // Export the file
 module.exports = router;

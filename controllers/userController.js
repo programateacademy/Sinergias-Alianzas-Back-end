@@ -3,11 +3,13 @@ const asyncHandler = require("express-async-handler");
 let parser = require("ua-parser-js"); // Agente
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const Cryptr = require("cryptr");
 
 // Import dependencies that allow password hashing
 const bcrypt = require("bcryptjs");
 
 const keysecret = process.env.SECRET_KEY;
+const cryptr = new Cryptr(process.env.CRYPTR_KEY);
 
 // Import model
 const userModel = require("../models/userModel");
@@ -129,6 +131,45 @@ const signIn = asyncHandler(async (req, res) => {
   }
 
   // Trigger para user-agent desconocido
+  // get UserAgent
+  /*
+   todo Obtener el user-agent permite saber desde que dispositivo se está ingresando o manipulando la información de la base de datos. Se usa como una medida de seguridad. 
+   */
+  const ua = parser(req.headers["user-agent"]);
+
+  const thisUserAgent = ua.ua;
+
+  console.log(thisUserAgent);
+
+  const allowedAgent = oldUser.userAgent.includes(thisUserAgent);
+
+  if (!allowedAgent) {
+    // Generar código de 6 digitos
+    const loginCode = Math.floor(100000 + Math.random() * 900000);
+    console.log(loginCode);
+
+    // Encriptar el token de inicio de sesión antes de guardarlo en la bd
+    const encryptedLoginCode = cryptr.encrypt(loginCode.toString());
+
+    // Eliminar token si ya existe en la bd
+    let userToken = await tokenModel.findOne({ userId: oldUser._id });
+
+    if (userToken) {
+      await userToken.deleteOne();
+    }
+
+    // Guardar token en la base de datos
+    await new tokenModel({
+      userId: oldUser._id,
+      lToken: encryptedLoginCode,
+      createdAt: Date.now(),
+      expiresAt: Date.now() + 60 * (60 * 1000), // 1 hora
+    }).save();
+
+    res.status(400);
+    throw new Error("Verifica tu correo para el código de acceso");
+  }
+
   // Token
   const token = generateToken(oldUser._id);
 
@@ -633,27 +674,6 @@ const changePassword = asyncHandler(async (req, res) => {
   }
 });
 
-//verify user for forgot password time
-const timeForgot = async (req, res) => {
-  const { id, token } = req.params;
-
-  try {
-    const validUser = await userModel.findOne({ _id: id, verify_token: token });
-
-    const verifyToken = jwt.verify(token, keysecret);
-
-    if (validUser && verifyToken._id) {
-      res.status(201).json({ status: 201, validUser });
-    } else {
-      res.status(401).json({ status: 401, message: "El usuario no existe" });
-    }
-  } catch (err) {
-    res.status(401).json({ status: 401, err });
-  }
-};
-
-//change password
-
 // Export methods
 module.exports = {
   signUp,
@@ -671,5 +691,4 @@ module.exports = {
   forgotPassword,
   resetPassword,
   changePassword,
-  timeForgot,
 };

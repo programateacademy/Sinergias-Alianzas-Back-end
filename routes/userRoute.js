@@ -22,6 +22,7 @@ const {
   resetPassword,
   changePassword,
   sendLoginCode,
+  loginWithCode,
 } = require("../controllers/userController");
 
 // Importar middleware
@@ -49,6 +50,7 @@ router.post("/forgotPassword", forgotPassword);
 router.patch("/resetPassword/:resetToken", protect, resetPassword);
 router.patch("/changePassword", protect, changePassword);
 router.post("/sendLoginCode/:email", sendLoginCode);
+router.post("/loginWithCode/:email", loginWithCode);
 
 // Export the file
 module.exports = router;

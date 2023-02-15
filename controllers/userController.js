@@ -168,7 +168,7 @@ const signIn = asyncHandler(async (req, res) => {
     }).save();
 
     res.status(400);
-    throw new Error("Verifica tu correo para el código de acceso");
+    throw new Error("Nuevo dispositivo o buscador detectado.");
   }
 
   // Token
@@ -264,6 +264,84 @@ const sendLoginCode = asyncHandler(async (req, res) => {
   }
 });
 
+/*
+- =======================
+- Verificar código de acceso
+- =======================
+*/
+const loginWithCode = asyncHandler(async (req, res) => {
+  //! Test del funcionamiento de la ruta
+  // res.send("Código de acceso correcto");
+
+  const { email } = req.params;
+  const { loginCode } = req.body;
+
+  const user = await userModel.findOne({ email });
+
+  if (!user) {
+    res.status(404);
+    throw new Error("Usuario no encontrado");
+  }
+
+  // Buscar token para login del usuario
+  const userToken = await tokenModel.findOne({
+    userId: user.id,
+    expiresAt: { $gt: Date.now() },
+  });
+
+  if (!userToken) {
+    res.status(404);
+    throw new Error(
+      "El código no es válido o ya expiró, por favor ingresa de nuevo"
+    );
+  }
+
+  // Desencriptar código de acceso
+  const decryptedLoginCode = cryptr.decrypt(userToken.lToken);
+
+  if (loginCode !== decryptedLoginCode) {
+    res.status(400);
+    throw new Error(
+      "El código ingresado no es correcto. Por favor intenta de nuevo"
+    );
+  } else {
+    // Registrar user-agent
+    // Trigger para user-agent desconocido
+    // get UserAgent
+    /*
+   todo Obtener el user-agent permite saber desde que dispositivo se está ingresando o manipulando la información de la base de datos. Se usa como una medida de seguridad. 
+   */
+    const ua = parser(req.headers["user-agent"]);
+    const thisUserAgent = ua.ua;
+
+    user.userAgent.push(thisUserAgent);
+
+    await user.save();
+
+    // Generar token
+    const token = generateToken(user._id);
+
+    // Enviar HTTP Cookie
+    res.cookie("token", token, {
+      path: "/",
+      httpOnly: true,
+      expires: new Date(Date.now() + 1000 * 86400), // = 1 día
+      sameSite: "none",
+      secure: true,
+    });
+
+    const { _id, name, email, rol, isVerify } = user;
+
+    res.status(200).json({
+      _id,
+      name,
+      email,
+      rol,
+      isVerify,
+      token,
+    });
+  }
+});
 /*
 - ==============================
 - Enviar correo de verificación
@@ -757,4 +835,5 @@ module.exports = {
   resetPassword,
   changePassword,
   sendLoginCode,
+  loginWithCode,
 };

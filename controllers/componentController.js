@@ -25,7 +25,7 @@ const addComponent = async (request, response) =>{
 
 };
 
-// Función para listar todas las películas
+// Función para listar todas los componentes
 const getComponents = async (req, res) => {
     try {
       const components = await compModel.find({ visible: true });

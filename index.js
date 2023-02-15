@@ -1,16 +1,18 @@
-// Import express, mongoose and variables 
+// Import express, mongoose and variables
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();
 
-// Import Cors and morgan 
+// Import Cors, body and cookie parser
 const cors = require("cors");
-const morgan = require("morgan");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
 // Import file with database connection
 const connectDB = require("./mongoDB");
 
+// Importar ruta de usuarios
 //Import component routes
 const fileComponent = require("./routes/componentRoute");
 
@@ -21,31 +23,49 @@ const app = express();
 //Middleware
 const userRoute = require("./routes/userRoute");
 
+// Importar middleware
+const errorHandler = require("./middleware/errorMiddleware");
 
-app.use(morgan("dev"));
-app.use(express.json({ limit: "30mb", extended: true }));
-app.use(express.urlencoded({ limit: "30mb", extended: true }));
+// Importar middleware
+const errorHandler = require("./middleware/errorMiddleware");
+
+
+// Puerto de conexión del servidor
+const PORT = process.env.PORT || 5000;
+
+// Middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(bodyParser.json());
 
 // Usar cors
-app.use(cors());
+//! Una vez se realice el despliegue reemplazar -> https://link-despliegue.vercel.app
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://link-despliegue.vercel.app"],
+    credentials: true,
+  })
+);
 
 // Endpoints component
 app.use("/component", fileComponent);
 
 //Endpoint user
 
-app.use("/users", userRoute);
+// Rutas - Módulo usuarios
+app.use("/api/users", userRoute);
 
 // Use database connection
 connectDB();
-
-// Puerto de conexión del servidor
-const PORT = process.env.PORT || 5000;
 
 // Server connection port
 app.get("/", (req, res) => {
   res.send("Hola desde el servidor");
 });
+
+// Error Handler - Middleware
+app.use(errorHandler);
 
 app.listen(PORT, (req, res) => {
   console.log(`Server is running on port ${PORT}`);

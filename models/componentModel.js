@@ -13,28 +13,19 @@ const componentSchema = mongoose.Schema(
         compDefinicion: String,
         compVideo: String,
         compDescripcion: String,
-        compImagenes:{
-                compImg1: String,
-                compImg2: String,
-                compImg3: String, },
-
-        compObjetivos:{
-            compObjetivo1: String, 
-            compObjetivo2: String, 
-            compObjetivo3: String, 
-        },
-        compLineasTrabajo:{
-            compLineaTrabajo1:String,
-            compLlineaTrabajo2:String,
-        },
-        recursos:{
-            recursosMetodologia:String, 
-            recursosFormatos:String, 
-            recursosDiagnosticos:String, 
-            recursosHerramientas:String, 
-            recursosMaterial:String, 
-        },
-        
+        compImg1: String,
+        compImg2: String,
+        compImg3: String, 
+        compObjetivo1: String, 
+        compObjetivo2: String, 
+        compObjetivo3: String, 
+        compLineaTrabajo1:String,
+        compLineaTrabajo2:String,
+        recursosMetodologia:String, 
+        recursosFormatos:String, 
+        recursosDiagnosticos:String, 
+        recursosHerramientas:String, 
+        recursosMaterial:String,         
         visible: {
             type: Boolean,
             default: true,

@@ -1,6 +1,5 @@
 // Import express, mongoose and variables
 const express = require("express");
-const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -13,22 +12,16 @@ const cookieParser = require("cookie-parser");
 const connectDB = require("./mongoDB");
 
 // Importar ruta de usuarios
+const userRoute = require("./routes/userRoute");
+
 //Import component routes
 const fileComponent = require("./routes/componentRoute");
 
+// Importar middleware
+const errorHandler = require("./middleware/errorMiddleware");
 
 // Inicializar el servidor de express
 const app = express();
-
-//Middleware
-const userRoute = require("./routes/userRoute");
-
-// Importar middleware
-const errorHandler = require("./middleware/errorMiddleware");
-
-// Importar middleware
-const errorHandler = require("./middleware/errorMiddleware");
-
 
 // Puerto de conexión del servidor
 const PORT = process.env.PORT || 5000;
@@ -51,9 +44,7 @@ app.use(
 // Endpoints component
 app.use("/component", fileComponent);
 
-//Endpoint user
-
-// Rutas - Módulo usuarios
+// Endpoints - Módulo usuarios
 app.use("/api/users", userRoute);
 
 // Use database connection

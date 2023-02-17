@@ -36,6 +36,19 @@ const getComponents = async (req, res) => {
     }
 }
 
+//Function get info to the component
+const getComponent = async(req, res) =>{
+  const{id} = req.params
+
+  try{
+    const component = await compModel.findById(id)
+
+    res.status(200).json(component)
+  }catch(error){
+    res.status(404).json({message: 'Algo salió mal'})
+  }
+}
+
 // ACTUALIZAR INFORMACIÓN DEL FORMULARIO
 
   const updateComponent= async (req, res) => {
@@ -65,5 +78,6 @@ const getComponents = async (req, res) => {
 
 exports.addComponent= addComponent;
 exports.getComponents = getComponents;
+exports.getComponent = getComponent;
 exports.updateComponent = updateComponent;
 exports.deleteComponent = deleteComponent;

@@ -30,13 +30,13 @@ const { protect, adminOnly } = require("../middleware/authMiddleware");
 
 // routes with their respective methods for HTTP requests
 // Rutas Generales
-router.post("/signIn", signIn);
+router.post("/login", signIn);
 router.get("/logout", logoutUser);
 router.get("/getUser", protect, getUser);
 router.get("/loginStatus", loginStatus);
 
 // Rutas del administrador
-router.post("/signUp", protect, adminOnly, signUp);
+router.post("/register", protect, adminOnly, signUp);
 router.patch("/updateUser", protect, adminOnly, updateUser);
 router.delete("/:id", protect, adminOnly, deleteUser);
 router.get("/getUsers", protect, adminOnly, getUsers);

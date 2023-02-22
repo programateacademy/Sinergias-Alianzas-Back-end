@@ -8,6 +8,8 @@ const mongoose = require("mongoose");
 // Structure of the component form
 const componentSchema = mongoose.Schema({
   compTitulo: String,
+  //!Color
+  compColor: String,
   compImgPpal: String,
   compDefinicion: String,
   compVideo: String,

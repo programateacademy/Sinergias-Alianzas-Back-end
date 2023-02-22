@@ -62,9 +62,29 @@ const getComponent = async(req, res) =>{
     }
   };
 
+
+//!Working delete 
+  const deleteComponent= async (req, res) => {
+    try {
+      await compModel.findOneAndUpdate(
+        { _id: req.params.id }, 
+        { visible: false } 
+      );
+      res.json({ msg: "Haz eliminado un componente" });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  };
+
+
+
+
+
+
+
   // DELETE INFORMACIÓN DEL FORMULARIO
 
-  const deleteComponent= async (req, res) => {
+  /* const deleteComponent= async (req, res) => {
     try {
       await compModel.findOneAndDelete(
         { _id: req.params.id }
@@ -73,7 +93,9 @@ const getComponent = async(req, res) =>{
     } catch (err) {
       return res.status(500).json({ msg: err.message });
     }
-  };
+  }; */
+
+  
 
 
 exports.addComponent= addComponent;

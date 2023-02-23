@@ -15,7 +15,7 @@ const{ addComponent, getComponents, updateComponent, deleteComponent, getCompone
 router.post("/new", addComponent); //Create Component
 router.get("/", getComponents); //List Component
 router.get('/seeComponent/:id', getComponent)// get component info
-router.put("/:id", updateComponent); //Update Component
+router.put("/updateComponent/:id", updateComponent); //Update Component
 
 //!Working delete
 router.put("/delete/:id", deleteComponent); //Delete Component

@@ -54,7 +54,7 @@ const getComponent = async (req, res) => {
       );
       res.json({ msg: "Tu actualización fue satisfactoria" });
     } catch (err) {
-      return res.status(500).json({ msg: err.message });
+      return res.status(500).json({ message: err.msg });
     }
   }; */
 

@@ -1,4 +1,5 @@
 //const Express = require("express");
+
 const { default: mongoose } = require("mongoose");
 // Import model Componente
 
@@ -46,48 +47,14 @@ const getComponent = async (req, res) => {
   }
 };
 
-/* // ACTUALIZAR INFORMACIÓN DEL FORMULARIO
-  const updateComponent= async (req, res) => {
-    try {
-      await compModel.findOneAndUpdate(
-        { _id: req.params.id }, req.body
-      );
-      res.json({ msg: "Tu actualización fue satisfactoria" });
-    } catch (err) {
-      return res.status(500).json({ message: err.msg });
-    }
-  }; */
-
 // ACTUALIZAR INFORMACIÓN DEL FORMULARIO
+
 const updateComponent = async (req, res) => {
   try {
-    await compModel.findOneAndUpdate(
-      { _id: req.params.id },
-      {
-        compTitulo: req.body.compTitulo,        
-        compColor: req.body.compColor,
-        compImgPpal: req.body.compImgPpal,
-        compDefinicion: req.body.compDefinicion,
-        compVideo: req.body.compVideo,
-        compDescripcion: req.body.compDescripcion,
-        compImg1: req.body.compImg1,
-        compImg2: req.body.compImg2,
-        compImg3: req.body.compImg3,
-        compObjetivo1: req.body.compObjetivo1,
-        compObjetivo2: req.body.compObjetivo2,
-        compObjetivo3: req.body.compObjetivo3,
-        compLineaTrabajo1: req.body.compLineaTrabajo1,
-        compLineaTrabajo2: req.body.compLineaTrabajo2,
-        recursosMetodologia: req.body.recursosMetodologia,
-        recursosFormatos: req.body.recursosFormatos,
-        recursosDiagnosticos: req.body.recursosDiagnosticos,
-        recursosHerramientas: req.body.recursosHerramientas,
-        recursosMaterial: req.body.recursosMaterial,
-      }
-    );
+    await compModel.findOneAndUpdate({ _id: req.params.id }, req.body);
     res.json({ msg: "Tu actualización fue satisfactoria" });
   } catch (err) {
-    return res.status(500).json({ msg: err.message });
+    return res.status(500).json({ message: err.msg });
   }
 };
 
@@ -103,19 +70,6 @@ const deleteComponent = async (req, res) => {
     return res.status(500).json({ msg: err.message });
   }
 };
-
-// DELETE INFORMACIÓN DEL FORMULARIO
-
-/* const deleteComponent= async (req, res) => {
-    try {
-      await compModel.findOneAndDelete(
-        { _id: req.params.id }
-      );
-      res.json({ msg: "Haz eliminado un componente" });
-    } catch (err) {
-      return res.status(500).json({ msg: err.message });
-    }
-  }; */
 
 exports.addComponent = addComponent;
 exports.getComponents = getComponents;

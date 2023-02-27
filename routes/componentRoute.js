@@ -9,16 +9,12 @@ const router = express.Router();
 // Linea 9 se crea una contante que llama a la función creada en el controlador y se requiere dicho documento donde reposa.
 const{ addComponent, getComponents, updateComponent, deleteComponent, getComponent } = require("../controllers/componentController");
 
-
 //Routes to the API
 // Se establecen las rutas a utilizar en la API usando los metodos de .get (Para OBTENER RECURSOS del servidor).post (Para CREAR un recurso del servidos) .put (para ACTUALIZAR un recurso del servidor) .delete (Para ELIMINAR un recurso del servidos)
 router.post("/new", addComponent); //Create Component
 router.get("/", getComponents); //List Component
 router.get('/seeComponent/:id', getComponent)// get component info
 router.put("/updateComponent/:id", updateComponent); //Update Component
-
-//!Working delete
-router.put("/delete/:id", deleteComponent); //Delete Component
-
+router.put("/delete/:id", deleteComponent); //Delete Component (change visibility of the component)
 
 module.exports = router;

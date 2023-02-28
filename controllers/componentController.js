@@ -46,48 +46,58 @@ const getComponent = async (req, res) => {
   }
 };
 
-/* // ACTUALIZAR INFORMACIÓN DEL FORMULARIO
-  const updateComponent= async (req, res) => {
-    try {
-      await compModel.findOneAndUpdate(
-        { _id: req.params.id }, req.body
-      );
-      res.json({ msg: "Tu actualización fue satisfactoria" });
-    } catch (err) {
-      return res.status(500).json({ message: err.msg });
-    }
-  }; */
-
-// ACTUALIZAR INFORMACIÓN DEL FORMULARIO
 const updateComponent = async (req, res) => {
+  const { id } = req.params;
+  const { compTitulo,
+    compColor,
+    compImgPpal,
+    compDefinicion,
+    compVideo,
+    compDescripcion,
+    compImg1,
+    compImg2,
+    compImg3,
+    compObjetivo1,
+    compObjetivo2,
+    compObjetivo3,
+    compLineaTrabajo1,
+    compLineaTrabajo2,
+    recursosMetodologia,
+    recursosFormatos,
+    recursosDiagnosticos,
+    recursosHerramientas,
+    recursosMaterial } = req.body;
   try {
-    await compModel.findOneAndUpdate(
-      { _id: req.params.id },
-      {
-        compTitulo: req.body.compTitulo,        
-        compColor: req.body.compColor,
-        compImgPpal: req.body.compImgPpal,
-        compDefinicion: req.body.compDefinicion,
-        compVideo: req.body.compVideo,
-        compDescripcion: req.body.compDescripcion,
-        compImg1: req.body.compImg1,
-        compImg2: req.body.compImg2,
-        compImg3: req.body.compImg3,
-        compObjetivo1: req.body.compObjetivo1,
-        compObjetivo2: req.body.compObjetivo2,
-        compObjetivo3: req.body.compObjetivo3,
-        compLineaTrabajo1: req.body.compLineaTrabajo1,
-        compLineaTrabajo2: req.body.compLineaTrabajo2,
-        recursosMetodologia: req.body.recursosMetodologia,
-        recursosFormatos: req.body.recursosFormatos,
-        recursosDiagnosticos: req.body.recursosDiagnosticos,
-        recursosHerramientas: req.body.recursosHerramientas,
-        recursosMaterial: req.body.recursosMaterial,
-      }
-    );
-    res.json({ msg: "Tu actualización fue satisfactoria" });
-  } catch (err) {
-    return res.status(500).json({ msg: err.message });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ message: `No existe el componente con el: ${id}` });
+    }
+
+    const updatedComponent = {
+    compTitulo,
+    compColor,
+    compImgPpal,
+    compDefinicion,
+    compVideo,
+    compDescripcion,
+    compImg1,
+    compImg2,
+    compImg3,
+    compObjetivo1,
+    compObjetivo2,
+    compObjetivo3,
+    compLineaTrabajo1,
+    compLineaTrabajo2,
+    recursosMetodologia,
+    recursosFormatos,
+    recursosDiagnosticos,
+    recursosHerramientas,
+    recursosMaterial,
+    _id: id,
+    };
+    await compModel.findByIdAndUpdate(id, updatedComponent, { new: true });
+    res.json(updatedComponent);
+  } catch (error) {
+    res.status(404).json({ message: "Algo va mal" });
   }
 };
 

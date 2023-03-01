@@ -51,31 +51,7 @@ const getComponent = async (req, res) => {
 
 const updateComponent = async (req, res) => {
   const { id } = req.params;
-  const { compTitulo,
-    compColor,
-    compImgPpal,
-    compDefinicion,
-    compVideo,
-    compDescripcion,
-    compImg1,
-    compImg2,
-    compImg3,
-    compObjetivo1,
-    compObjetivo2,
-    compObjetivo3,
-    compLineaTrabajo1,
-    compLineaTrabajo2,
-    recursosMetodologia,
-    recursosFormatos,
-    recursosDiagnosticos,
-    recursosHerramientas,
-    recursosMaterial } = req.body;
-  try {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(404).json({ message: `No existe el componente con el: ${id}` });
-    }
-
-    const updatedComponent = {
+  const {
     compTitulo,
     compColor,
     compImgPpal,
@@ -95,7 +71,34 @@ const updateComponent = async (req, res) => {
     recursosDiagnosticos,
     recursosHerramientas,
     recursosMaterial,
-    _id: id,
+  } = req.body;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res
+        .status(404)
+        .json({ message: `No existe el componente con el: ${id}` });
+    }
+    const updatedComponent = {
+      compTitulo,
+      compColor,
+      compImgPpal,
+      compDefinicion,
+      compVideo,
+      compDescripcion,
+      compImg1,
+      compImg2,
+      compImg3,
+      compObjetivo1,
+      compObjetivo2,
+      compObjetivo3,
+      compLineaTrabajo1,
+      compLineaTrabajo2,
+      recursosMetodologia,
+      recursosFormatos,
+      recursosDiagnosticos,
+      recursosHerramientas,
+      recursosMaterial,
+      _id: id,
     };
     await compModel.findByIdAndUpdate(id, updatedComponent, { new: true });
     res.json(updatedComponent);

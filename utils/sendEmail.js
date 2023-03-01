@@ -1,11 +1,11 @@
-// Dependencias
+// Import dependencies
 const nodemailer = require("nodemailer");
 const hbs = require("nodemailer-express-handlebars");
 const path = require("path");
 
 /*
 - ===========================
--       Enviar email
+-       Send email code 
 - ===========================
 */
 
@@ -18,7 +18,7 @@ const sendEmail = async (
   name,
   link
 ) => {
-  // Crear transportador del correo
+  // Create email transporter
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: 587,
@@ -31,7 +31,7 @@ const sendEmail = async (
     },
   });
 
-  // Plantilla del correo
+  // Email template to response
   const handlearOptions = {
     viewEngine: {
       extName: ".handlebars",
@@ -44,7 +44,7 @@ const sendEmail = async (
 
   transporter.use("compile", hbs(handlearOptions));
 
-  // Opciones para enviar el correo
+  // Options to send email
   const options = {
     from: send_from,
     to: send_to,
@@ -57,7 +57,7 @@ const sendEmail = async (
     },
   };
 
-  // Enviar correo
+  // Send email
   transporter.sendMail(options, function (error, info) {
     if (error) {
       console.log(error);

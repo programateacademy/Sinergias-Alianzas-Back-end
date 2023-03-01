@@ -1,10 +1,10 @@
-// Importar jsonwebtoken
+// jsonwebtoken import 
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
 /*
 - =======================
--   Generar Token
+-   Generate Token
 - =======================
 */
 const generateToken = (id) => {

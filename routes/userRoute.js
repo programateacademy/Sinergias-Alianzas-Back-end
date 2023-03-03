@@ -36,7 +36,7 @@ router.get("/getUser", protect, getUser);
 router.get("/loginStatus", loginStatus);
 
 // Rutas del administrador
-router.post("/signUp", protect, adminOnly, signUp);
+router.post("/register", protect, adminOnly, signUp);
 router.patch("/updateUser", protect, adminOnly, updateUser);
 router.delete("/:id", protect, adminOnly, deleteUser);
 router.get("/getUsers", protect, adminOnly, getUsers);

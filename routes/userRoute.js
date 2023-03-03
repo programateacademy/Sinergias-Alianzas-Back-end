@@ -39,8 +39,7 @@ router.get("/loginStatus", loginStatus);
 router.post("/register", protect, adminOnly, signUp);
 router.patch("/updateUser", protect, adminOnly, updateUser);
 router.delete("/:id", protect, adminOnly, deleteUser);
-//router.get("/getUsers", protect, adminOnly, getUsers);
-router.get("/getUsers", getUsers);
+router.get("/getUsers", protect, adminOnly, getUsers);
 
 
 router.post("/upgradeUser", protect, adminOnly, upgradeUser);

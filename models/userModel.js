@@ -1,7 +1,7 @@
 // Import mongoose
 const mongoose = require("mongoose");
 
-// Hashear contraseña
+// Code the password with bcrypt
 const bcrypt = require("bcryptjs");
 
 // Define the structure of the model
@@ -12,7 +12,6 @@ const userSchema = mongoose.Schema(
       secondName: String,
       lastName: String,
     },
-
     email: {
       type: String,
       required: [true, "Por favor ingresa el correo"],
@@ -23,53 +22,43 @@ const userSchema = mongoose.Schema(
         "Ingresa un correo válido",
       ],
     },
-
     password: {
       type: String,
       required: [true, "Por favor ingresa la contraseña"],
     },
-
     rol: {
       type: String,
       required: true,
       default: "Colaborador",
-      // Otros roles: Admin, suspendido,
+      // More roles: Admin, suspendido,
     },
-
     isVerify: {
       type: Boolean,
       default: false,
     },
-
     userAgent: {
       type: Array,
       required: true,
       default: [],
     },
   },
-
   {
     timestamps: true,
     minimize: false,
   }
 );
 
-// Encriptar la contraseña antes de guardarla en la bd
+// Code the pasword before save on the Bd
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
   }
-
-  // Hash contraseña
+  // Code the password with 10 characters
   const salt = await bcrypt.genSalt(10);
-
   const hashedPassword = await bcrypt.hash(this.password, salt);
-
   this.password = hashedPassword;
-
   next();
 });
 // variable that will contain the model to be able to export
 const User = mongoose.model("User", userSchema);
-
 module.exports = User;

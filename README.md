@@ -2,7 +2,7 @@
   <h1 align="center">SINERGIAS</h1>
   <h2 align="center">Alianzas Estratégicas Para La Salud Y El Desarollo Social</h2>
   <a href="#" target="_blank">
-    <img src="4-Sinergias-Alianzas-Back-end/assets/Sinergias.jpg" alt="Imagen Proyecto" width="40%" height="40%">
+    <img src="https://github.com/programateacademy/4-Sinergias-Alianzas-Back-end/blob/main/assets/Sinergias.jpg" alt="Imagen Proyecto" width="40%" height="40%">
   </a>
 </div>
 
@@ -65,4 +65,4 @@ Estas instrucciones te permitirán obtener una copia del proyecto en funcionamie
 
 ## Equipo de Desarrollo Primera Fase
 
-<p align="left"> <a href="https://github.com/Nisanech" target="_blank"> <img src="4-Sinergias-Alianzas-Back-end/assets/Logo-Nicolas.png" alt="Logo Nicolas" width="20%" height="20%"/></a> <a href="https://github.com/Andrea-25-11" target="_blank"> <img src="4-Sinergias-Alianzas-Back-end/assets/Logo-Andrea.png" alt="Logo Andrea" width="10%" height="5%"/></a> <a href="https://github.com/EdwardMelo1" target="_blank"> <img src="4-Sinergias-Alianzas-Back-end/assets/Logo-Edward.png" alt="Logo Edward" width="20%" height="20%"/></a> <a href="https://github.com/Jonathanvg97" target="_blank"> <img src="4-Sinergias-Alianzas-Back-end/assets/Logo-Jonathan.png" alt="Logo-Jonathan" width="20%" height="20%"/></a> <a href="https://github.com/CrisCaBeRi" target="_blank"> <img src="4-Sinergias-Alianzas-Back-end/assets/Logo-Cristian.png" alt="Logo-Cristian" width="15%" height="20%"/></a> <a href="https://github.com/Juliana1497" target="_blank"> <img src="4-Sinergias-Alianzas-Back-end/assets/Logo-Juliana.png" alt="Logo-Juliana" width="10%" height="5%"/></a></p>
+<p align="left"> <a href="https://github.com/Nisanech" target="_blank"> <img src="https://github.com/programateacademy/4-Sinergias-Alianzas-Back-end/blob/main/assets/Logo-Nicolas.png" alt="Logo Nicolas" width="20%" height="20%"/></a> <a href="https://github.com/Andrea-25-11" target="_blank"> <img src="https://github.com/programateacademy/4-Sinergias-Alianzas-Back-end/blob/main/assets/Logo-Andrea.png" alt="Logo Andrea" width="10%" height="5%"/></a> <a href="https://github.com/EdwardMelo1" target="_blank"> <img src="https://github.com/programateacademy/4-Sinergias-Alianzas-Back-end/blob/main/assets/Logo-Edward.png" alt="Logo Edward" width="20%" height="20%"/></a> <a href="https://github.com/Jonathanvg97" target="_blank"> <img src="https://github.com/programateacademy/4-Sinergias-Alianzas-Back-end/blob/main/assets/Logo-Jonathan.png" alt="Logo-Jonathan" width="20%" height="20%"/></a> <a href="https://github.com/CrisCaBeRi" target="_blank"> <img src="https://github.com/programateacademy/4-Sinergias-Alianzas-Back-end/blob/main/assets/Logo-Cristian.png" alt="Logo-Cristian" width="15%" height="20%"/></a> <a href="https://github.com/Juliana1497" target="_blank"> <img src="https://github.com/programateacademy/4-Sinergias-Alianzas-Back-end/blob/main/assets/Logo-Juliana.png" alt="Logo-Juliana" width="10%" height="5%"/></a></p>

@@ -1,4 +1,3 @@
 .env
 /node_modules
 /views/*.html
-/views/changePassword.handlebars

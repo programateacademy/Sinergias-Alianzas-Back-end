@@ -41,7 +41,6 @@ router.patch("/updateUser", protect, adminOnly, updateUser);
 router.delete("/:id", protect, adminOnly, deleteUser);
 router.get("/getUsers", protect, adminOnly, getUsers);
 
-
 router.post("/upgradeUser", protect, adminOnly, upgradeUser);
 
 // Rutas envío de email para verificar usuario y restablecer o cambiar contraseña

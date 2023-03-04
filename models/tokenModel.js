@@ -30,7 +30,7 @@ const tokenSchema = mongoose.Schema({
     type: Date,
     required: true,
   },
-  
+
   expiresAt: {
     type: Date,
     required: true,

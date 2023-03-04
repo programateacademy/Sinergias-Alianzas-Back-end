@@ -13,7 +13,7 @@ dotenv.config();
 //* Se crea la conexión de la base de datos
 
 const connectDB = () => {
-  // Connection method 
+  // Connection method
   mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,

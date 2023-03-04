@@ -109,7 +109,7 @@ const deleteComponent = async (req, res) => {
     return res.status(500).json({ msg: err.message });
   }
 };
-//Export every function 
+//Export every function
 exports.addComponent = addComponent;
 exports.getComponents = getComponents;
 exports.getComponent = getComponent;

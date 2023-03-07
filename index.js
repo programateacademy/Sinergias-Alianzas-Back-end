@@ -17,6 +17,9 @@ const userRoute = require("./routes/userRoute");
 //Import component routes
 const fileComponent = require("./routes/componentRoute");
 
+//Import foro routes
+const fileForo = require("./routes/foroRoute");
+
 // Importar middleware
 const errorHandler = require("./middleware/errorMiddleware");
 
@@ -43,6 +46,9 @@ app.use(
 
 // Endpoints component
 app.use("/component", fileComponent);
+
+// Endpoints foro
+app.use("/foro", fileForo);
 
 // Endpoints - Módulo usuarios
 app.use("/api/users", userRoute);

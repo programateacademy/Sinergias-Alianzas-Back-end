@@ -1,6 +1,6 @@
 const { default: mongoose } = require("mongoose");
 // Import model Component
-const foroModel = require("../model/foroModel.js");
+const foroModel = require("../models/foroModel");
 
 // Function to create a component
 const addQuestion = async (request, response) => {
@@ -67,9 +67,10 @@ const updateForo = async (req, res) => {
 
 //Function to delete component (change visibility)
 const deleteForo = async (req, res) => {
+  const { id } = req.params;
   try {
     await foroModel.findOneAndUpdate(
-      { _id: req.params.id },
+      { _id: id},
       { visible: false }
     );
     res.json({ msg: "Haz eliminado un Foro" });

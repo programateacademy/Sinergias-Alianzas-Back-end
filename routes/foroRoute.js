@@ -3,6 +3,7 @@ const express = require("express");
 //Router: Used for add more pages to or aplication
 const router = express.Router();
 
+const {addAnswer, updateAnswer} = require("../controllers/answerController")
 //Get functionality from controller
 const {
     addQuestion,
@@ -20,5 +21,7 @@ router.patch("/", updateForo); //Update Component
 router.put("/delete", deleteForo); //Delete Component
 
 // Routes answers
-router.post("/newAnswer", )
+router.post("/respuesta", addAnswer);
+router.patch("/respuesta/:foroId/:respuestaId", updateAnswer);
+
 module.exports = router;

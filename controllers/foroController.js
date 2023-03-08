@@ -29,9 +29,9 @@ const getForos = async (req, res) => {
 
 //Function get info to the component
 const getForo = async (req, res) => {
-  const { id } = req.params;
+  const { _id } = req.body;
   try {
-    const foro = await foroModel.findById(id);
+    const foro = await foroModel.findById(_id);
     res.status(200).json(foro);
   } catch (error) {
     res.status(404).json({ message: "Algo salió mal" });
@@ -40,25 +40,25 @@ const getForo = async (req, res) => {
 
 // Function to update the data of the component
 const updateForo = async (req, res) => {
-  const { id } = req.params;
+  const { _id } = req.body;
   const {
     id_type,
     question,
     author
   } = req.body;
   try {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
       return res
         .status(404)
-        .json({ message: `No existe el foro con el: ${id}` });
+        .json({ message: `No existe el foro con el: ${_id}` });
     }
     const updatedForo = {
         id_type,
         question,
         author,
-        _id: id,
+        _id: _id,
     };
-    await foroModel.findByIdAndUpdate(id, updatedForo, { new: true });
+    await foroModel.findByIdAndUpdate(_id, updatedForo, { new: true });
     res.json(updatedForo);
   } catch (error) {
     res.status(404).json({ message: "No se pudo actualizar el Foro" });
@@ -67,10 +67,10 @@ const updateForo = async (req, res) => {
 
 //Function to delete component (change visibility)
 const deleteForo = async (req, res) => {
-  const { id } = req.params;
+  const { _id } = req.body;
   try {
     await foroModel.findOneAndUpdate(
-      { _id: id},
+      { _id: _id},
       { visible: false }
     );
     res.json({ msg: "Haz eliminado un Foro" });

@@ -30,12 +30,12 @@ const addAnswer = async (req, res) => {
     }
   };
   const updateAnswer = async (req, res) => {
-    const { foroId, respuestaId } = req.params;
+    const { _id } = req.body;
     const { author, description } = req.body;
   
     try {
       const foro = await foroModel.findOneAndUpdate(
-        { _id: foroId, "answers._id": respuestaId },
+        { "answers._id": _id },
         {
           $set: {
             "answers.$.author": author,
@@ -46,14 +46,15 @@ const addAnswer = async (req, res) => {
       );
   
       if (!foro) {
-        return res.status(404).json({ message: "Foro o respuesta no encontrado" });
+        return res.status(404).json({ message: "No se encontró la respuesta" });
       }
   
-      res.status(200).json(foro);
+      res.status(200).json({ message: "Respuesta actualizada exitosamente" });
     } catch (error) {
       res.status(500).json({ message: "Algo salió mal" });
     }
   };
+  
   
 //Export every function
 exports.addAnswer = addAnswer;

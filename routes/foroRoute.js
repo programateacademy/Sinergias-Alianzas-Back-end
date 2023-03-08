@@ -22,6 +22,6 @@ router.put("/delete", deleteForo); //Delete Component
 
 // Routes answers
 router.post("/respuesta", addAnswer);
-router.patch("/respuesta/:foroId/:respuestaId", updateAnswer);
+router.put("/actualizar", updateAnswer);
 
 module.exports = router;

@@ -564,9 +564,19 @@ const deleteUser = asyncHandler(async (req, res) => {
 const getUsers = asyncHandler(async (req, res) => {
   //! Test del funcionamiento de la ruta
   // res.send("Todos los usuarios");
+  const {page} = req.query;
 
-  const users = await userModel.find().sort("-createdAt").select("-password");
-
+  const limit = 5;
+  const startIndex = (Number(page)-1) * limit;
+  const total = await userModel.countDocuments({});
+  const users = await userModel.find().sort("-createdAt").select("-password").limit(limit).skip(startIndex);
+  res.json({
+    data: users,
+    currentPage: Number(page),
+    totalUsers: total,
+    numberOfPages: Math.ceil(total/limit),
+  });
+  
   if (!users) {
     res.status(500);
     throw new Error("Algo salió mal");

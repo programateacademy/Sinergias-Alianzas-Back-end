@@ -50,9 +50,9 @@ const getForos = async (req, res) => {
 
 //Function get info to the component
 const getForo = async (req, res) => {
-  const { _id } = req.body;
+  const { id } = req.params;
   try {
-    const foro = await foroModel.findById(_id);
+    const foro = await foroModel.findById(id);
     res.status(200).json(foro);
   } catch (error) {
     res.status(404).json({ message: "Algo salió mal" });

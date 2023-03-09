@@ -14,14 +14,14 @@ const {
 } = require("../controllers/foroController");
 
 //Routes to the API request
-router.post("/new", addQuestion); //Create Component
+router.post("/", addQuestion); //Create Component
 router.get("/", getForos); //List Component
-router.get("/seeForo", getForo); // get component info
+router.get("/:id", getForo); // get component info
 router.patch("/", updateForo); //Update Component
-router.put("/delete", deleteForo); //Delete Component
+router.put("/", deleteForo); //Delete Component
 
 // Routes answers
-router.post("/respuesta", addAnswer);
-router.put("/actualizar", updateAnswer);
-router.put("/eliminar", deleteAnswer);
+router.post("/", addAnswer);
+router.patch("/", updateAnswer);
+router.put("/", deleteAnswer);
 module.exports = router;

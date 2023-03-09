@@ -85,7 +85,26 @@ const updateForo = async (req, res) => {
     res.status(404).json({ message: "No se pudo actualizar el Foro" });
   }
 };
-
+const updateLike = async (req, res) => {
+  const { _id,
+    likes
+  } = req.body;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
+      return res
+        .status(404)
+        .json({ message: `No existe el foro con el: ${_id}` });
+    }
+    const updatedLike = {
+        likes,
+        _id: _id,
+    };
+    await foroModel.findByIdAndUpdate(_id, updatedLike, { new: true });
+    res.json(updatedLike);
+  } catch (error) {
+    res.status(404).json({ message: "No se pudo actualizar el Foro" });
+  }
+};
 //Function to delete component (change visibility)
 const deleteForo = async (req, res) => {
   const { _id } = req.body;
@@ -105,3 +124,4 @@ exports.getForos = getForos;
 exports.getForo = getForo;
 exports.updateForo = updateForo;
 exports.deleteForo = deleteForo;
+exports.updateLike = updateLike;

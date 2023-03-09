@@ -11,6 +11,7 @@ const {
     getForo,
     updateForo,
     deleteForo,
+    updateLike
 } = require("../controllers/foroController");
 
 //Routes to the API request
@@ -24,4 +25,5 @@ router.put("/", deleteForo); //Delete Component
 router.post("/", addAnswer);
 router.patch("/", updateAnswer);
 router.put("/", deleteAnswer);
+router.put("/updateLike", updateLike)
 module.exports = router;

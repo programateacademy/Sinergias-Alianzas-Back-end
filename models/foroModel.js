@@ -15,7 +15,6 @@ const foroSaludMujerSchema = mongoose.Schema({
     {
        author: String,
        description: String,
-       delete: Boolean,
        
        visible: {
         type: Boolean,

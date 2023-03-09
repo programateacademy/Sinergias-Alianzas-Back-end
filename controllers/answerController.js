@@ -54,9 +54,34 @@ const addAnswer = async (req, res) => {
       res.status(500).json({ message: "Algo salió mal" });
     }
   };
+  const deleteAnswer = async (req, res) => {
+    const { _id } = req.body;
+  
+    try {
+      const foro = await foroModel.findOneAndUpdate(
+        { "answers._id": _id },
+        {
+          $set: {
+            "answers.$._id": _id,
+            "answers.$.visible": false
+          },
+        },
+        { new: true }
+      );
+  
+      if (!foro) {
+        return res.status(404).json({ message: "No se encontró la respuesta" });
+      }
+  
+      res.status(200).json({ message: "Respuesta ocultada exitosamente" });
+    } catch (error) {
+      res.status(500).json({ message: "Algo salió mal" });
+    }
+  };
   
   
 //Export every function
 exports.addAnswer = addAnswer;
 exports.updateAnswer = updateAnswer;
+exports.deleteAnswer = deleteAnswer;
 

@@ -20,12 +20,33 @@ const addQuestion = async (request, response) => {
 // Function to list components
 const getForos = async (req, res) => {
   try {
-    const foros = await foroModel.find({ visible: true });
+    const foros = await foroModel.aggregate([
+      // Descomponer la matriz de respuestas en documentos separados
+      { $unwind: "$answers" },
+      // Filtrar solo las respuestas que tengan visible en true
+      { $match: { "answers.visible": true } },
+      // Volver a agrupar los documentos en la matriz de respuestas
+      {
+        $group: {
+          _id: "$_id",
+          id_type: { $first: "$id_type" },
+          question: { $first: "$question" },
+          author: { $first: "$author" },
+          likes: { $first: "$likes" },
+          visible: { $first: "$visible" },
+          answers: { $push: "$answers" },
+        },
+      },
+      // Filtrar solo los foros que tengan visible en true
+      { $match: { visible: true } },
+    ]);
     res.status(200).json(foros);
   } catch (error) {
     res.status(404).json({ messsage: "Algo salió mal" });
   }
 };
+
+
 
 //Function get info to the component
 const getForo = async (req, res) => {

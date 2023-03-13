@@ -17,7 +17,7 @@ const addQuestion = async (request, response) => {
   }
 };
 
-// Function to list components
+// Function to question list
 const getForos = async (req, res) => {
   try {
     const foros = await foroModel.aggregate([
@@ -33,6 +33,8 @@ const getForos = async (req, res) => {
           question: { $first: "$question" },
           author: { $first: "$author" },
           likes: { $first: "$likes" },
+          reportNumber: {$first: "$reportNumber"},
+          report: {$first: "$report"},
           visible: { $first: "$visible" },
           answers: { $push: "$answers" },
         },
@@ -46,7 +48,78 @@ const getForos = async (req, res) => {
   }
 };
 
+//get only report filter
+const getReports = async (req, res) => {
+  try {
+    const questions = await foroModel.aggregate([
+      {
+        $match: {
+          report: true,
+        },
+      },
+      {
+        $lookup: {
+          from: 'forosaludmujers',
+          localField: '_id',
+          foreignField: 'id_type',
+          as: 'answers',
+        },
+      },
+      {
+        $project: {
+          question: 1,
+          author: 1,
+          likes: 1,
+          reportNumber: 1,
+          report: 1,
+          visible: 1,
+          answers: {
+            $filter: {
+              input: '$answers',
+              as: 'answer',
+              cond: {
+                $eq: ['$report', true],
+              },
+            },
+          },
+        },
+      },
+    ]);
 
+    const answers = await foroModel.aggregate([
+      {
+        $unwind: '$answers',
+      },
+      {
+        $match: {
+          'answers.report': true,
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          question: '$question',
+          answer: '$answers.description',
+          author: '$answers.author',
+          likes: '$answers.likes',
+          reportNumber: '$answers.reportNumber',
+          report: '$answers.report',
+          visible: '$answers.visible',
+        },
+      },
+    ]);
+
+    return res.json({
+      questions,
+      answers,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: 'Algo salió mal',
+    });
+  }
+};
 
 //Function get info to the component
 const getForo = async (req, res) => {
@@ -85,7 +158,21 @@ const updateForo = async (req, res) => {
     res.status(404).json({ message: "No se pudo actualizar el Foro" });
   }
 };
-const updateLike = async (req, res) => {
+//Function to delete component (change visibility)
+const deleteForo = async (req, res) => {
+  const { _id } = req.body;
+  try {
+    await foroModel.findOneAndUpdate(
+      { _id: _id},
+      { visible: false }
+    );
+    res.json({ msg: "Haz ocultado un Foro" });
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
+};
+
+const updateLikeQuestion = async (req, res) => {
   const { _id,
     likes
   } = req.body;
@@ -105,23 +192,34 @@ const updateLike = async (req, res) => {
     res.status(404).json({ message: "No se pudo actualizar el Foro" });
   }
 };
-//Function to delete component (change visibility)
-const deleteForo = async (req, res) => {
-  const { _id } = req.body;
+
+const updateReportQuestion = async (req, res) => {
+  const { _id, reportNumber } = req.body;
+
   try {
-    await foroModel.findOneAndUpdate(
-      { _id: _id},
-      { visible: false }
-    );
-    res.json({ msg: "Haz eliminado un Foro" });
-  } catch (err) {
-    return res.status(500).json({ msg: err.message });
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
+      return res
+        .status(404)
+        .json({ message: `No existe el foro con el: ${_id}` });
+    }
+    const updatedReport = {
+        reportNumber,
+        report: true,
+        _id: _id,
+    };
+    await foroModel.findByIdAndUpdate(_id, updatedReport, { new: true });
+    res.json(updatedReport);
+  } catch (error) {
+    res.status(500).json({ message: "Algo salió mal" });
   }
 };
+
 //Export every function
 exports.addQuestion = addQuestion;
 exports.getForos = getForos;
+exports.getReports = getReports;
 exports.getForo = getForo;
 exports.updateForo = updateForo;
 exports.deleteForo = deleteForo;
-exports.updateLike = updateLike;
+exports.updateLikeQuestion = updateLikeQuestion;
+exports.updateReportQuestion = updateReportQuestion;

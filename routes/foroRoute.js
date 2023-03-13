@@ -3,27 +3,31 @@ const express = require("express");
 //Router: Used for add more pages to or aplication
 const router = express.Router();
 
-const {addAnswer, updateAnswer, deleteAnswer} = require("../controllers/answerController")
 //Get functionality from controller
 const {
-    addQuestion,
-    getForos,
-    getForo,
-    updateForo,
-    deleteForo,
-    updateLike
+  addQuestion,
+  getForos,
+  getForo,
+  updateForo,
+  deleteForo,
+  updateLikeQuestion,
+  updateReportQuestion,
+  getReports
 } = require("../controllers/foroController");
 
-//Routes to the API request
-router.post("/", addQuestion); //Create Component
-router.get("/", getForos); //List Component
-router.get("/:id", getForo); // get component info
-router.patch("/", updateForo); //Update Component
-router.put("/", deleteForo); //Delete Component
+//GET
+router.get("/", getForos); //List foro
+router.get("/seeForo/:id", getForo); // Get foro info
+router.get("/reports", getReports); // Get foro info
+//POST
+router.post("/", addQuestion); //Create foro
+//PUT AND PATCH
+router.patch("/", updateForo); //Update foro
+router.put("/", deleteForo); //Delete foro
 
-// Routes answers
-router.post("/", addAnswer);
-router.patch("/", updateAnswer);
-router.put("/", deleteAnswer);
-router.put("/updateLike", updateLike)
+// OPTIONS - LIKE AND REPORT QUESTION
+router.put("/updateNumberLike", updateLikeQuestion);
+router.put("/updateReport", updateReportQuestion);
+
+
 module.exports = router;

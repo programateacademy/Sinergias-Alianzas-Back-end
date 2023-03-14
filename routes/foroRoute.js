@@ -6,7 +6,6 @@ const router = express.Router();
 //Get functionality from controller
 const {
   addQuestion,
-  getForos,
   getForo,
   updateForo,
   deleteForo,
@@ -16,18 +15,17 @@ const {
 } = require("../controllers/foroController");
 
 //GET
-router.get("/:id", getForos); //List foro
-router.get("/seeForo/:id", getForo); // Get foro info
-router.get("/reports", getReports); // Get foro info
+router.get("/:id", getForo); // Get foro info ---FUNCIONA
+router.get("/", getReports); // Get foro info ---FUNCIONA
 //POST
-router.post("/", addQuestion); //Create foro
+router.post("/:id", addQuestion); //Create foro
 //PUT AND PATCH
-router.patch("/", updateForo); //Update foro
-router.put("/", deleteForo); //Delete foro
+router.patch("/", updateForo); //Update foro ---FUNCIONA
+router.put("/", deleteForo); //Delete foro ---FUNCIONA
 
-// OPTIONS - LIKE AND REPORT QUESTION
-router.put("/updateNumberLike", updateLikeQuestion);
-router.put("/updateReport", updateReportQuestion);
+// OPTIONS - LIKE AND REPORT QUESTION 
+router.put("/updateNumberLike", updateLikeQuestion); // ---FUNCIONA
+router.put("/updateReport", updateReportQuestion); // ---FUNCIONA
 
 
 module.exports = router;

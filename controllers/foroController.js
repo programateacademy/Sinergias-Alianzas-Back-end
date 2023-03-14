@@ -4,10 +4,12 @@ const foroModel = require("../models/foroModel");
 
 // Function to create a component
 const addQuestion = async (request, response) => {
+  const { id } = request.params
   const foro = request.body;
   const newForo = new foroModel({
     ...foro,
     createdAt: new Date().toISOString(),
+    id_type: id
   });
   try {
     await newForo.save();
@@ -17,43 +19,39 @@ const addQuestion = async (request, response) => {
   }
 };
 
-// Function to question list
-const getForos = async (req, res) => {
+//Function get info to the component
+const getForo = async (req, res) => {
   const { id } = req.params;
   try {
-    const foros = await foroModel.aggregate([
-      // Descomponer la matriz de respuestas en documentos separados
-      { $unwind: "$answers" },
-      // Filtrar solo las respuestas que tengan visible en true
-      { $match: { answers: {$exists: true } } },
-      {$match:{"answers.visible": true }},
-      
-      
-      // Volver a agrupar los documentos en la matriz de respuestas
-      {
-        $group: {
-          _id: "$_id",
-          id_type: { $first: "$id_type" },
-          question: { $first: "$question" },
-          author: { $first: "$author" },
-          likes: { $first: "$likes" },
-          reportNumber: {$first: "$reportNumber"},
-          report: {$first: "$report"},
-          visible: { $first: "$visible" },
-          answers: { $push: "$answers" },
-        },
-      },
-      // Filtrar solo los foros que tengan visible en true
-      
-      { $match: { visible: true } },
-      { $match: { id_type: id } },
-    ]);
-    res.status(200).json(foros);
+    // const foro = await foroModel.find({id_type: id,visible: true, answers: {$exists: true }});
+    // res.status(200).json(foro);
+    const filtro = { visible: true, id_type: id};
+    const foros = await foroModel.find(filtro);
+
+    // Agregar un objeto de filtro a la función find() para buscar sólo respuestas con visible=true
+    foros.forEach((foro) => {
+      foro.answers = foro.answers.filter((answer) => answer.visible);
+    });
+
+    // Si no hay respuestas en el documento, mantener el documento en la lista
+    const forosSinRespuestas = foros.filter((foro) => foro.answers.length === 0);
+    const forosConRespuestas = foros.filter((foro) => foro.answers.length > 0);
+
+    // Ordenar los foros con respuestas por fecha de última respuesta
+    forosConRespuestas.sort((a, b) => {
+      const fechaUltimaRespuestaA = new Date(a.answers[a.answers.length - 1].createdAt);
+      const fechaUltimaRespuestaB = new Date(b.answers[b.answers.length - 1].createdAt);
+      return fechaUltimaRespuestaB - fechaUltimaRespuestaA;
+    });
+
+    // Concatenar los foros con y sin respuestas para mostrarlos en orden
+    const resultado = forosConRespuestas.concat(forosSinRespuestas);
+
+    res.json(resultado);
   } catch (error) {
-    res.status(404).json({ messsage: "Algo salió mal" });
+    res.status(404).json({ message: "Algo salió mal" });
   }
 };
-
 //get only report filter
 const getReports = async (req, res) => {
   try {
@@ -127,16 +125,7 @@ const getReports = async (req, res) => {
   }
 };
 
-//Function get info to the component
-const getForo = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const foro = await foroModel.find({id_type: id,visible: true, answers: {$exists: true }});
-    res.status(200).json(foro);
-  } catch (error) {
-    res.status(404).json({ message: "Algo salió mal" });
-  }
-};
+
 
 // Function to update the data of the component
 const updateForo = async (req, res) => {
@@ -222,7 +211,6 @@ const updateReportQuestion = async (req, res) => {
 
 //Export every function
 exports.addQuestion = addQuestion;
-exports.getForos = getForos;
 exports.getReports = getReports;
 exports.getForo = getForo;
 exports.updateForo = updateForo;

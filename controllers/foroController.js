@@ -19,12 +19,16 @@ const addQuestion = async (request, response) => {
 
 // Function to question list
 const getForos = async (req, res) => {
+  const { id } = req.params;
   try {
     const foros = await foroModel.aggregate([
       // Descomponer la matriz de respuestas en documentos separados
       { $unwind: "$answers" },
       // Filtrar solo las respuestas que tengan visible en true
-      { $match: { "answers.visible": true } },
+      { $match: { answers: {$exists: true } } },
+      {$match:{"answers.visible": true }},
+      
+      
       // Volver a agrupar los documentos en la matriz de respuestas
       {
         $group: {
@@ -40,7 +44,9 @@ const getForos = async (req, res) => {
         },
       },
       // Filtrar solo los foros que tengan visible en true
+      
       { $match: { visible: true } },
+      { $match: { id_type: id } },
     ]);
     res.status(200).json(foros);
   } catch (error) {
@@ -125,7 +131,7 @@ const getReports = async (req, res) => {
 const getForo = async (req, res) => {
   const { id } = req.params;
   try {
-    const foro = await foroModel.findById(id);
+    const foro = await foroModel.find({id_type: id,visible: true, answers: {$exists: true }});
     res.status(200).json(foro);
   } catch (error) {
     res.status(404).json({ message: "Algo salió mal" });

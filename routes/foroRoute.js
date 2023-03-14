@@ -16,7 +16,7 @@ const {
 } = require("../controllers/foroController");
 
 //GET
-router.get("/", getForos); //List foro
+router.get("/:id", getForos); //List foro
 router.get("/seeForo/:id", getForo); // Get foro info
 router.get("/reports", getReports); // Get foro info
 //POST

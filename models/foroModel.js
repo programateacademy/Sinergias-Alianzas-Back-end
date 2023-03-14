@@ -10,18 +10,39 @@ const foroSaludMujerSchema = mongoose.Schema({
   id_type: String,
   question: String,
   author: String,
-  likes: Number,
+  likes: {
+    type: Number,
+    default: 0,
+  },
+  reportNumber: {
+    type: Number,
+    default: 0,
+  },
+  report: {
+    type: Boolean,
+    default: false,
+  },
   answers: [
     {
-       author: String,
-       description: String,
-       delete: Boolean,
-       
-       visible: {
+      author: String,
+      description: String,
+      likes: {
+        type: Number,
+        default: 0,
+      },
+      reportNumber: {
+        type: Number,
+        default: 0,
+      },
+      report: {
+        type: Boolean,
+        default: false,
+      },
+      visible: {
         type: Boolean,
         default: true,
       },
-    }
+    },
   ],
 
   visible: {

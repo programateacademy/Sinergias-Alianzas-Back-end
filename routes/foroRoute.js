@@ -5,18 +5,29 @@ const router = express.Router();
 
 //Get functionality from controller
 const {
-    addQuestion,
-    getForos,
-    getForo,
-    updateForo,
-    deleteForo,
+  addQuestion,
+  getForos,
+  getForo,
+  updateForo,
+  deleteForo,
+  updateLikeQuestion,
+  updateReportQuestion,
+  getReports
 } = require("../controllers/foroController");
 
-//Routes to the API request
-router.post("/new", addQuestion); //Create Foro
-router.get("/", getForos); //List Foro
-router.get("/seeForo/:id", getForo); // get Foro info
-router.patch("/:id", updateForo); //Update Foro
-router.put("/delete/:id", deleteForo); //Delete Foro
+//GET
+router.get("/", getForos); //List foro
+router.get("/seeForo/:id", getForo); // Get foro info
+router.get("/reports", getReports); // Get foro info
+//POST
+router.post("/", addQuestion); //Create foro
+//PUT AND PATCH
+router.patch("/", updateForo); //Update foro
+router.put("/", deleteForo); //Delete foro
+
+// OPTIONS - LIKE AND REPORT QUESTION
+router.put("/updateNumberLike", updateLikeQuestion);
+router.put("/updateReport", updateReportQuestion);
+
 
 module.exports = router;

@@ -15,8 +15,6 @@ const addAnswer = async (req, res) => {
       const newAnswer = {
         author,
         description,
-        report,
-        visible: true,
       };
       foro.answers.push(newAnswer);
   

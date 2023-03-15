@@ -13,6 +13,7 @@ const connectDB = require("./mongoDB");
 
 // Importar middleware
 const errorHandler = require("./middleware/errorMiddleware");
+const Componente = require("./models/componentModel");
 
 // Inicializar el servidor de express
 const app = express();
@@ -35,7 +36,14 @@ app.use(
   })
 );
 
-app.use('/v1/api', require('./routes'))
+app.use("/component", require('./routes/componentRoute'));
+
+// Endpoints - Módulo usuarios
+app.use("/api/users", require('./routes/userRoute'));
+
+app.use('/foroRoute', require('./routes/foroRoute'))
+
+app.use('/answerRoute', require('./routes/answerRoute'))
 
 // Use database connection
 connectDB();

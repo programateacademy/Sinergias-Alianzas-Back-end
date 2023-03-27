@@ -1,8 +1,8 @@
 const { default: mongoose } = require("mongoose");
-// Import model Component
+// Import model foro
 const foroModel = require("../models/foroModel");
 
-// Function to create a component
+// Function to create a question
 const addQuestion = async (request, response) => {
   const { id } = request.params
   const foro = request.body;
@@ -18,8 +18,7 @@ const addQuestion = async (request, response) => {
     response.status(404).json({ messsage: "Algo salió mal" });
   }
 };
-
-//Function get info to the component
+//Function get info to the question
 const getForo = async (req, res) => {
   const { id } = req.params;
   try {
@@ -124,10 +123,7 @@ const getReports = async (req, res) => {
     });
   }
 };
-
-
-
-// Function to update the data of the component
+// Function to update the data of the question
 const updateForo = async (req, res) => {
   const { _id } = req.body;
   const {
@@ -153,7 +149,7 @@ const updateForo = async (req, res) => {
     res.status(404).json({ message: "No se pudo actualizar el Foro" });
   }
 };
-//Function to delete component (change visibility)
+//Function to delete question (change visibility)
 const deleteForo = async (req, res) => {
   const { _id } = req.body;
   try {
@@ -166,7 +162,7 @@ const deleteForo = async (req, res) => {
     return res.status(500).json({ msg: err.message });
   }
 };
-
+// Function to update Like Question
 const updateLikeQuestion = async (req, res) => {
   const { _id,
     likes
@@ -187,7 +183,7 @@ const updateLikeQuestion = async (req, res) => {
     res.status(404).json({ message: "No se pudo actualizar el Foro" });
   }
 };
-
+//Function to update Report Question
 const updateReportQuestion = async (req, res) => {
   const { _id, reportNumber } = req.body;
 

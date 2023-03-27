@@ -35,14 +35,14 @@ app.use(
     credentials: true,
   })
 );
-
+// Endpoints - Módulo components
 app.use("/component", require('./routes/componentRoute'));
 
 // Endpoints - Módulo usuarios
 app.use("/api/users", require('./routes/userRoute'));
-
+// Endpoints - Módulo foro
 app.use('/foroRoute', require('./routes/foroRoute'))
-
+// Endpoints - Módulo foro
 app.use('/answerRoute', require('./routes/answerRoute'))
 
 // Use database connection

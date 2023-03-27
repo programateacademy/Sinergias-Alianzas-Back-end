@@ -1,5 +1,5 @@
 const { default: mongoose } = require("mongoose");
-// Import model Component
+// Import model 
 const foroModel = require("../models/foroModel");
 
 const addAnswer = async (req, res) => {
@@ -50,7 +50,7 @@ const addAnswer = async (req, res) => {
       res.status(500).json({ message: "Algo salió mal" });
     }
   };
-  const deleteAnswer = async (req, res) => {
+  const deleteAnswer = async (req, res) => { 
     const { _id } = req.body;
   
     try {

@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 
 // Structure of the collection in the database
 
-// Structure of the component form
+// Structure of the question form
 const foroSaludMujerSchema = mongoose.Schema({
   id_type: String,
   question: String,

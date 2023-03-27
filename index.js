@@ -11,14 +11,9 @@ const cookieParser = require("cookie-parser");
 // Import file with database connection
 const connectDB = require("./mongoDB");
 
-// Importar ruta de usuarios
-const userRoute = require("./routes/userRoute");
-
-//Import component routes
-const fileComponent = require("./routes/componentRoute");
-
 // Importar middleware
 const errorHandler = require("./middleware/errorMiddleware");
+const Componente = require("./models/componentModel");
 
 // Inicializar el servidor de express
 const app = express();
@@ -40,20 +35,20 @@ app.use(
     credentials: true,
   })
 );
-
-// Endpoints component
-app.use("/component", fileComponent);
+// Endpoints - Módulo components
+app.use("/component", require('./routes/componentRoute'));
 
 // Endpoints - Módulo usuarios
-app.use("/api/users", userRoute);
+app.use("/api/users", require('./routes/userRoute'));
+// Endpoints - Módulo foro
+app.use('/foroRoute', require('./routes/foroRoute'))
+// Endpoints - Módulo foro
+app.use('/answerRoute', require('./routes/answerRoute'))
 
 // Use database connection
 connectDB();
 
-// Server connection port
-app.get("/", (req, res) => {
-  res.send("Hola desde el servidor");
-});
+
 
 // Error Handler - Middleware
 app.use(errorHandler);

@@ -9,7 +9,7 @@ const mongoose = require("mongoose");
 //* Import dotenv, node js package for config the envirionment variables
 const dotenv = require("dotenv");
 dotenv.config();
-
+mongoose.set('strictQuery', false);
 //* Se crea la conexión de la base de datos
 
 const connectDB = () => {

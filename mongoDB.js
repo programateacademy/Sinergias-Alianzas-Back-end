@@ -1,26 +1,25 @@
-//* Importar dependencia de mongoose
+//* Import mongoose to work with DB.
 const mongoose = require("mongoose");
-
 /*
  * ======================================
- *      Conexión de la base de datos
+ *      DB Conection
  * ======================================
  */
 
-//* Importar dotenv para las variables de entorno
+//* Import dotenv, node js package for config the envirionment variables
 const dotenv = require("dotenv");
 dotenv.config();
-
+mongoose.set('strictQuery', false);
 //* Se crea la conexión de la base de datos
 
 const connectDB = () => {
-  // Método de conexión para la base de datos
+  // Connection method
   mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
 
-  // Las siguientes funciones permiten determinar el estado de la base de datos: conectada, desconectada o error en la conexión
+  // State of DB connection
   mongoose.connection.on("connected", () => {
     console.log("Base de datos conectada");
   });
